@@ -26,6 +26,9 @@ public class GameWindow extends JFrame {
     private final JPanel contentPanel;
     private final GameController controller;
 
+    private final java.util.Set<Integer> pressedKeys = new java.util.HashSet<>();
+    private javax.swing.Timer movementTimer;
+
     public GameWindow() {
         super("Mars Escape");
 
@@ -51,6 +54,7 @@ public class GameWindow extends JFrame {
         });
 
         setupKeyBindings(panel);
+        setupMovementTimer();
 
         setContentPane(contentPanel);
         setLocationRelativeTo(null);
@@ -61,27 +65,57 @@ public class GameWindow extends JFrame {
         InputMap inputMap = panel.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW);
         ActionMap actionMap = panel.getActionMap();
 
-        int moveAmount = 15; // Increased slightly for better feel
+        int[] keyCodes = {
+            java.awt.event.KeyEvent.VK_UP, java.awt.event.KeyEvent.VK_W,
+            java.awt.event.KeyEvent.VK_DOWN, java.awt.event.KeyEvent.VK_S,
+            java.awt.event.KeyEvent.VK_LEFT, java.awt.event.KeyEvent.VK_A,
+            java.awt.event.KeyEvent.VK_RIGHT, java.awt.event.KeyEvent.VK_D
+        };
 
-        String[] keys = {"UP", "W", "DOWN", "S", "LEFT", "A", "RIGHT", "D"};
-        int[][] dirs = {{0, -1}, {0, -1}, {0, 1}, {0, 1}, {-1, 0}, {-1, 0}, {1, 0}, {1, 0}};
+        for (int keyCode : keyCodes) {
+            String pressedKey = "pressed " + keyCode;
+            String releasedKey = "released " + keyCode;
 
-        for (int i = 0; i < keys.length; i++) {
-            final int dx = dirs[i][0] * moveAmount;
-            final int dy = dirs[i][1] * moveAmount;
-            String key = keys[i];
-            
-            inputMap.put(KeyStroke.getKeyStroke(key), key);
-            actionMap.put(key, new AbstractAction() {
+            inputMap.put(KeyStroke.getKeyStroke(keyCode, 0, false), pressedKey);
+            actionMap.put(pressedKey, new AbstractAction() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    controller.movePlayer(dx, dy);
+                    pressedKeys.add(keyCode);
+                }
+            });
+
+            inputMap.put(KeyStroke.getKeyStroke(keyCode, 0, true), releasedKey);
+            actionMap.put(releasedKey, new AbstractAction() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    pressedKeys.remove(keyCode);
                 }
             });
         }
     }
 
+    private void setupMovementTimer() {
+        int moveAmount = 8; // Slowed down from 12 for better control
+        movementTimer = new javax.swing.Timer(20, e -> {
+            if (pressedKeys.isEmpty()) return;
+
+            int dx = 0;
+            int dy = 0;
+
+            if (pressedKeys.contains(java.awt.event.KeyEvent.VK_UP) || pressedKeys.contains(java.awt.event.KeyEvent.VK_W)) dy -= moveAmount;
+            if (pressedKeys.contains(java.awt.event.KeyEvent.VK_DOWN) || pressedKeys.contains(java.awt.event.KeyEvent.VK_S)) dy += moveAmount;
+            if (pressedKeys.contains(java.awt.event.KeyEvent.VK_LEFT) || pressedKeys.contains(java.awt.event.KeyEvent.VK_A)) dx -= moveAmount;
+            if (pressedKeys.contains(java.awt.event.KeyEvent.VK_RIGHT) || pressedKeys.contains(java.awt.event.KeyEvent.VK_D)) dx += moveAmount;
+
+            if (dx != 0 || dy != 0) {
+                controller.movePlayer(dx, dy);
+            }
+        });
+    }
+
     public void showGameOverDialog(boolean victory) {
+        movementTimer.stop();
+        pressedKeys.clear();
         String title = victory ? "Mission Success!" : "Mission Failed";
         String message = victory ? "You secured the energy crystal and escaped Mars!" : "The astronaut fell in the fortress.";
         
@@ -107,6 +141,7 @@ public class GameWindow extends JFrame {
     private void playGame() {
         controller.restartGame();
         cardLayout.show(contentPanel, GAME_CARD);
+        movementTimer.start();
         requestFocusInWindow(); // Ensure keyboard input works
     }
 
