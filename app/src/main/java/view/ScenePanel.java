@@ -42,25 +42,33 @@ public class ScenePanel extends JPanel {
     }
 
     private void drawExplorationScene(Graphics2D g2d) {
-        drawBackground(g2d);
-        
-        Floor floor = controller.getCastle().getCurrentFloor();
-        if (floor != null) {
-            for (model.Room room : floor.getRooms()) {
-                drawRoom(g2d, room);
-            }
-        }
-
         Player player = controller.getPlayer();
-        if (player != null) {
-            drawTopDownAstronaut(g2d, player.getX(), player.getY());
+        Floor floor = controller.getCastle().getCurrentFloor();
+        if (player == null || floor == null) return;
+
+        int w = getWidth();
+        int h = getHeight();
+
+        // Camera logic: focus on player, but stay within map bounds
+        int camX = Math.max(0, Math.min(player.getX() - w / 2, floor.getWidth() - w));
+        int camY = Math.max(0, Math.min(player.getY() - h / 2, floor.getHeight() - h));
+
+        g2d.translate(-camX, -camY);
+
+        drawBackground(g2d, floor);
+        
+        for (model.Room room : floor.getRooms()) {
+            drawRoom(g2d, room);
         }
 
+        drawTopDownAstronaut(g2d, player.getX(), player.getY());
+
+        g2d.translate(camX, camY); // Reset translation for HUD
         drawLocation(g2d, controller.getCastle());
     }
 
     private void drawCombatScene(Graphics2D g2d, Enemy enemy) {
-        drawBackground(g2d);
+        drawBackground(g2d, null);
         drawLocation(g2d, controller.getCastle());
         Player player = controller.getPlayer();
 
@@ -74,12 +82,13 @@ public class ScenePanel extends JPanel {
         g2d.setColor(new Color(45, 45, 70, 180));
         g2d.fillRoundRect(room.getX(), room.getY(), room.getWidth(), room.getHeight(), 15, 15);
         g2d.setColor(room.isCleared() ? new Color(0, 255, 100) : new Color(255, 50, 50));
-        g2d.setStroke(new java.awt.BasicStroke(2));
+        g2d.setStroke(new java.awt.BasicStroke(4));
         g2d.drawRoundRect(room.getX(), room.getY(), room.getWidth(), room.getHeight(), 15, 15);
+        g2d.setStroke(new java.awt.BasicStroke(1));
         
         g2d.setColor(Color.WHITE);
-        g2d.setFont(new Font(Font.MONOSPACED, Font.BOLD, 12));
-        g2d.drawString(room.getName(), room.getX() + 10, room.getY() + 20);
+        g2d.setFont(new Font(Font.MONOSPACED, Font.BOLD, 14));
+        g2d.drawString(room.getName().toUpperCase(), room.getX() + 15, room.getY() + 30);
 
         if (!room.isCleared()) {
             drawTopDownAlien(g2d, room.getX() + room.getWidth()/2, room.getY() + room.getHeight()/2);
@@ -87,53 +96,58 @@ public class ScenePanel extends JPanel {
     }
 
     private void drawTopDownAstronaut(Graphics2D g2d, int x, int y) {
-        // Body (Circle from top) - Scaled up
         g2d.setColor(Color.WHITE);
         g2d.fillOval(x - 20, y - 20, 40, 40);
-        // Backpack
         g2d.setColor(new Color(180, 180, 180));
         g2d.fillRect(x - 15, y + 12, 30, 10);
-        // Visor
         g2d.setColor(new Color(80, 200, 255));
         g2d.fillRoundRect(x - 12, y - 18, 24, 10, 6, 6);
     }
 
     private void drawTopDownAlien(Graphics2D g2d, int x, int y) {
-        // Alien head from top
         g2d.setColor(new Color(40, 180, 40));
         g2d.fillOval(x - 22, y - 22, 44, 44);
-        // Eyes
         g2d.setColor(Color.BLACK);
         g2d.fillOval(x - 14, y - 12, 10, 14);
         g2d.fillOval(x + 4, y - 12, 10, 14);
     }
 
-    private void drawBackground(Graphics2D g2d) {
-        int w = getWidth();
-        int h = getHeight();
+    private void drawBackground(Graphics2D g2d, Floor floor) {
+        int w = floor != null ? floor.getWidth() : getWidth();
+        int h = floor != null ? floor.getHeight() : getHeight();
 
-        // 1. Dark Castle Walls (Stone Texture)
+        // 1. Floor Tiles
         g2d.setColor(new Color(20, 20, 25));
         g2d.fillRect(0, 0, w, h);
         
-        // Draw stone bricks for texture
         g2d.setColor(new Color(30, 30, 40));
-        random.setSeed(123);
-        for (int i = 0; i < 60; i++) {
-            int bx = random.nextInt(w);
-            int by = random.nextInt(h);
-            g2d.drawRect(bx, by, 60, 30);
+        for (int i = 0; i < w; i += 100) {
+            for (int j = 0; j < h; j += 100) {
+                g2d.drawRect(i, j, 100, 100);
+            }
         }
 
-        // 2. Torches with Glow
-        drawTorch(g2d, 100, 80);
-        drawTorch(g2d, w - 100, 80);
-        drawTorch(g2d, 100, h - 100);
-        drawTorch(g2d, w - 100, h - 100);
+        // 2. Walls
+        if (floor != null) {
+            g2d.setColor(new Color(60, 60, 80));
+            for (java.awt.Rectangle wall : floor.getWalls()) {
+                g2d.fillRect(wall.x, wall.y, wall.width, wall.height);
+                g2d.setColor(new Color(80, 80, 100));
+                g2d.drawRect(wall.x, wall.y, wall.width, wall.height);
+                g2d.setColor(new Color(60, 60, 80));
+            }
+        }
 
-        // 3. Central pathway hints
-        g2d.setColor(new Color(25, 25, 35));
-        g2d.fillRoundRect(50, 50, w - 100, h - 100, 30, 30);
+        // 3. Torches (Spread out in the labyrinth)
+        if (floor != null) {
+            random.setSeed(777);
+            for (int i = 0; i < 20; i++) {
+                drawTorch(g2d, random.nextInt(w), random.nextInt(h));
+            }
+        } else {
+            drawTorch(g2d, 100, 100);
+            drawTorch(g2d, getWidth() - 100, 100);
+        }
     }
 
     private void drawTorch(Graphics2D g, int x, int y) {
