@@ -4,7 +4,6 @@ import controller.GameController;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
-import java.awt.GradientPaint;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
@@ -22,7 +21,7 @@ public class ScenePanel extends JPanel {
 
     public ScenePanel(GameController controller) {
         this.controller = controller;
-        setPreferredSize(new Dimension(880, 600)); // Increased height for exploration
+        setPreferredSize(new Dimension(880, 600)); 
         setBackground(new Color(10, 10, 15));
     }
 
@@ -49,7 +48,6 @@ public class ScenePanel extends JPanel {
         int w = getWidth();
         int h = getHeight();
 
-        // Camera logic: focus on player, but stay within map bounds
         int camX = Math.max(0, Math.min(player.getX() - w / 2, floor.getWidth() - w));
         int camY = Math.max(0, Math.min(player.getY() - h / 2, floor.getHeight() - h));
 
@@ -63,7 +61,7 @@ public class ScenePanel extends JPanel {
 
         drawTopDownAstronaut(g2d, player.getX(), player.getY());
 
-        g2d.translate(camX, camY); // Reset translation for HUD
+        g2d.translate(camX, camY); 
         drawLocation(g2d, controller.getCastle());
     }
 
@@ -72,25 +70,18 @@ public class ScenePanel extends JPanel {
         drawLocation(g2d, controller.getCastle());
         Player player = controller.getPlayer();
 
+        int centerX = getWidth() / 2;
+        int centerY = getHeight() / 2;
+
         if (player != null) {
-            drawCharacter(g2d, 150, 200, true, "Astronaut", player.getHealth(), player.getMaxHealth(), player.getShield(), false);
+            drawCharacter(g2d, centerX - 290, centerY + 50, true, "Astronaut", player.getHealth(), player.getMaxHealth(), player.getShield(), false);
         }
-        drawCharacter(g2d, 650, 200, false, "Enemy", enemy.getHealth(), enemy.getMaxHealth(), enemy.getShield(), enemy.isBoss());
+        drawCharacter(g2d, centerX + 210, centerY + 50, false, "Enemy", enemy.getHealth(), enemy.getMaxHealth(), enemy.getShield(), enemy.isBoss());
     }
 
     private void drawRoom(Graphics2D g2d, model.Room room) {
-        g2d.setColor(new Color(45, 45, 70, 180));
-        g2d.fillRoundRect(room.getX(), room.getY(), room.getWidth(), room.getHeight(), 15, 15);
-        g2d.setColor(room.isCleared() ? new Color(0, 255, 100) : new Color(255, 50, 50));
-        g2d.setStroke(new java.awt.BasicStroke(4));
-        g2d.drawRoundRect(room.getX(), room.getY(), room.getWidth(), room.getHeight(), 15, 15);
-        g2d.setStroke(new java.awt.BasicStroke(1));
-        
-        g2d.setColor(Color.WHITE);
-        g2d.setFont(new Font(Font.MONOSPACED, Font.BOLD, 14));
-        g2d.drawString(room.getName().toUpperCase(), room.getX() + 15, room.getY() + 30);
-
         if (!room.isCleared()) {
+            // Boxes and names removed as requested
             drawTopDownAlien(g2d, room.getX() + room.getWidth()/2, room.getY() + room.getHeight()/2);
         }
     }
@@ -116,7 +107,6 @@ public class ScenePanel extends JPanel {
         int w = floor != null ? floor.getWidth() : getWidth();
         int h = floor != null ? floor.getHeight() : getHeight();
 
-        // 1. Floor Tiles
         g2d.setColor(new Color(20, 20, 25));
         g2d.fillRect(0, 0, w, h);
         
@@ -127,7 +117,6 @@ public class ScenePanel extends JPanel {
             }
         }
 
-        // 2. Walls
         if (floor != null) {
             g2d.setColor(new Color(60, 60, 80));
             for (java.awt.Rectangle wall : floor.getWalls()) {
@@ -138,7 +127,6 @@ public class ScenePanel extends JPanel {
             }
         }
 
-        // 3. Torches (Spread out in the labyrinth)
         if (floor != null) {
             random.setSeed(777);
             for (int i = 0; i < 20; i++) {
@@ -151,39 +139,36 @@ public class ScenePanel extends JPanel {
     }
 
     private void drawTorch(Graphics2D g, int x, int y) {
-        // Torch stick
         g.setColor(new Color(70, 45, 30));
         g.fillRect(x - 4, y, 8, 35);
         
-        // Flame glow
         float[] dist = {0.0f, 1.0f};
         Color[] colors = {new Color(255, 160, 0, 120), new Color(255, 80, 0, 0)};
         java.awt.RadialGradientPaint glow = new java.awt.RadialGradientPaint(x, y, 60, dist, colors);
         g.setPaint(glow);
         g.fillOval(x - 60, y - 60, 120, 120);
         
-        // Flame core
         g.setColor(new Color(255, 220, 80));
         g.fillOval(x - 6, y - 12, 12, 18);
     }
 
     private void drawLocation(Graphics2D g2d, Castle castle) {
         g2d.setFont(new Font(Font.MONOSPACED, Font.BOLD, 20));
-        g2d.setColor(new Color(50, 180, 255)); // Sci-fi blue
+        g2d.setColor(new Color(50, 180, 255)); 
         g2d.drawString("DARK ALIEN FORTRESS", 25, 35);
 
         if (castle == null) return;
 
         Floor floor = castle.getCurrentFloor();
-        Room room = floor == null ? null : floor.getCurrentRoom();
         
         String levelInfo = "FLOOR LEVEL: " + castle.getCurrentFloorNumber() + " / " + castle.getFloorCount();
-        String roomInfo = (room == null) ? "CORE SECURED" : floor.getName().toUpperCase() + " > " + room.getName().toUpperCase();
+        // Room name removed as requested
+        String floorName = (floor == null) ? "CORE SECURED" : floor.getName().toUpperCase();
 
         g2d.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 16));
         g2d.setColor(Color.WHITE);
         g2d.drawString(levelInfo, 25, 60);
-        g2d.drawString(roomInfo, 25, 85);
+        g2d.drawString(floorName, 25, 85);
     }
 
     private void drawCharacter(Graphics2D g, int x, int y, boolean isPlayer, String name, int health, int maxHealth, int shield, boolean isBoss) {
@@ -193,13 +178,11 @@ public class ScenePanel extends JPanel {
             drawAlien(g, x, y, isBoss);
         }
 
-        // Name and Health Bar (Adjusted position)
         int barY = y + 25;
         g.setColor(Color.WHITE);
         g.setFont(new Font(Font.MONOSPACED, Font.BOLD, 16));
         g.drawString(name, x - 20, y - 120);
 
-        // Shield Bar (Blue, above Health Bar)
         if (shield > 0) {
             g.setColor(new Color(40, 40, 40));
             g.fillRect(x - 20, barY - 12, 120, 8);
@@ -224,17 +207,16 @@ public class ScenePanel extends JPanel {
     }
 
     private void drawAstronaut(Graphics2D g, int x, int y) {
-        // Astronaut Side View (Scaled up)
         g.setColor(Color.WHITE);
-        g.fillRoundRect(x, y - 75, 50, 75, 12, 12); // Body
-        g.fillOval(x + 5, y - 105, 40, 40); // Helmet
+        g.fillRoundRect(x, y - 75, 50, 75, 12, 12); 
+        g.fillOval(x + 5, y - 105, 40, 40); 
         g.setColor(new Color(100, 220, 255));
-        g.fillRoundRect(x + 12, y - 98, 30, 20, 10, 10); // Visor
+        g.fillRoundRect(x + 12, y - 98, 30, 20, 10, 10); 
         g.setColor(Color.WHITE);
-        g.fillRect(x + 8, y, 14, 18); // Legs
+        g.fillRect(x + 8, y, 14, 18); 
         g.fillRect(x + 28, y, 14, 18);
         g.setColor(new Color(40, 40, 40));
-        g.fillRect(x + 5, y + 15, 20, 6); // Boots
+        g.fillRect(x + 5, y + 15, 20, 6); 
         g.fillRect(x + 25, y + 15, 20, 6);
     }
 
@@ -244,16 +226,15 @@ public class ScenePanel extends JPanel {
         } else {
             g.setColor(new Color(60, 190, 60));
         }
-        // Alien Side View (Scaled down to match Astronaut)
-        g.fillOval(x, y - 70, 50, 75); // Body
-        g.fillOval(x - 5, y - 100, 60, 45); // Head
+        g.fillOval(x, y - 70, 50, 75); 
+        g.fillOval(x - 5, y - 100, 60, 45); 
         
         if (isBoss) {
-            g.setColor(new Color(255, 0, 0)); // Red eyes for boss
+            g.setColor(new Color(255, 0, 0)); 
         } else {
             g.setColor(Color.BLACK);
         }
-        g.fillOval(x + 8, y - 88, 16, 22); // Eyes
+        g.fillOval(x + 8, y - 88, 16, 22); 
         g.fillOval(x + 36, y - 88, 16, 22);
     }
 
