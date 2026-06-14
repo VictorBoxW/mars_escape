@@ -92,8 +92,8 @@ public class GameController {
 
         if (floor.isCleared()) {
             if (castle.advanceFloor()) {
-                gamePanel.appendLog("Ascending to " + castle.getCurrentFloor().getName());
-                player.setPosition(440, 500); // Reset position for new floor
+                gamePanel.appendLog("System: Ascending to " + castle.getCurrentFloor().getName());
+                player.setPosition(50, 450); // Reset position for new floor
             } else if (!castle.isEnergyCrystalTaken()) {
                 gamePanel.appendLog("The fortress is quiet, but the crystal is still missing.");
             }
@@ -237,15 +237,16 @@ public class GameController {
 
     private Player createPlayer() {
         Player player = new Player("Astronaut");
-        Weapon rifle = new Weapon("Plasma Rifle", "A high-powered military rifle.", 8);
-        Armor suit = new Armor("Pressure Suit", "Standard EVA protection.", 1);
+        Weapon rifle = new Weapon("Plasma Rifle", "A high-powered military rifle.", 10);
+        Armor suit = new Armor("Pressure Suit", "Standard EVA protection.", 2);
 
         player.addItem(rifle);
         player.addItem(suit);
-        player.addItem(new Consumable("Med Kit", "Restores 32 health.", 32));
-        player.addItem(new ShieldItem("Shield Cell", "Provides +20 energy shield.", 20));
+        player.addItem(new Consumable("Med Kit", "Restores 40 health.", 40));
+        player.addItem(new ShieldItem("Shield Cell", "Provides +25 energy shield.", 25));
         player.equipWeapon(rifle);
         player.equipArmor(suit);
+        player.setPosition(50, 450);
 
         return player;
     }
@@ -253,31 +254,23 @@ public class GameController {
     private Castle createCastle() {
         // Floor 1: 3 Rooms, 1 alien each
         Floor floor1 = new Floor("Lower Bastion", List.of(
-                new Room("Outer Guard", "A lone alien stands watch.", List.of(new Enemy("Martian Scout", 20, 5, 1, "Krrr!")), List.of(), 100, 100, 150, 150),
-                new Room("Inner Guard", "The hallway is guarded.", List.of(new Enemy("Martian Guard", 25, 6, 2, "Halt!")), List.of(), 350, 100, 150, 150),
-                new Room("Stairwell", "A final sentinel before the stairs.", List.of(new Enemy("Martian Elite", 30, 7, 3, "Die!")), List.of(), 600, 100, 150, 150)
+                new Room("North Guard", "A lone scout.", List.of(new Enemy("Martian Scout", 30, 6, 2, "Krrr!")), List.of(), 100, 50, 160, 160),
+                new Room("Central Hall", "A warrior watch.", List.of(new Enemy("Martian Warrior", 40, 8, 3, "Halt!")), List.of(), 360, 220, 160, 160),
+                new Room("South Exit", "Final guard.", List.of(new Enemy("Martian Elite", 50, 10, 4, "Die!")), List.of(), 620, 390, 160, 160)
         ));
 
         // Floor 2: 3 Rooms, 1 alien each
-        Floor floor2 = new Floor("Royal Wing", List.of(
-                new Room("Library", "An alien scholar defends its books.", List.of(new Enemy("Alien Mage", 35, 8, 2, "Magic!")), List.of(), 100, 100, 150, 150),
-                new Room("Gallery", "A warrior stands among the art.", List.of(new Enemy("Alien Warrior", 40, 9, 4, "Aagh!")), List.of(), 350, 100, 150, 150),
-                new Room("Armory", "The armor master blocks the way.", List.of(new Enemy("Alien Master", 45, 10, 5, "Stronger!")), List.of(), 600, 100, 150, 150)
+        Floor floor2 = new Floor("Research Wing", List.of(
+                new Room("Lab Alpha", "Researcher.", List.of(new Enemy("Alien Scientist", 55, 12, 4, "Interruption!")), List.of(), 100, 390, 160, 160),
+                new Room("Data Core", "The curator.", List.of(new Enemy("Alien Guardian", 65, 14, 5, "Aagh!")), List.of(), 360, 220, 160, 160),
+                new Room("Lab Beta", "Experiment protector.", List.of(new Enemy("Alien Master", 75, 16, 6, "Stronger!")), List.of(), 620, 50, 160, 160)
         ));
 
-        // Floor 3: 3 Rooms, 2 aliens in first 2, then BOSS
+        // Floor 3: 3 Rooms, 1 alien each
         Floor floor3 = new Floor("Throne Floor", List.of(
-                new Room("First Gate", "Two guards block the path.", List.of(
-                        new Enemy("Elite Guard A", 50, 11, 5, "Intruder!"),
-                        new Enemy("Elite Guard B", 50, 11, 5, "Double trouble!")
-                ), List.of(), 100, 100, 150, 150),
-                new Room("Second Gate", "Another pair of elites.", List.of(
-                        new Enemy("Elite Guard C", 55, 12, 6, "Stop!"),
-                        new Enemy("Elite Guard D", 55, 12, 6, "No pass!")
-                ), List.of(), 350, 100, 150, 150),
-                new Room("Throne Room", "The Dark Alien holds the crystal.", List.of(
-                        new Enemy("Dark Alien", 150, 18, 10, "THE CRYSTAL IS MINE!", true)
-                ), List.of(), 600, 100, 150, 150)
+                new Room("Great Hall", "Heavy guard.", List.of(new Enemy("Royal Guard", 85, 18, 7, "Intruder!")), List.of(), 100, 50, 160, 160),
+                new Room("Ante-Chamber", "Sentinel.", List.of(new Enemy("Elite Sentinel", 95, 20, 8, "Stop!")), List.of(), 360, 220, 160, 160),
+                new Room("Throne Room", "The Dark Alien holds the crystal.", List.of(new Enemy("Dark Alien", 200, 25, 12, "THE CRYSTAL IS MINE!", true)), List.of(), 620, 390, 160, 160)
         ));
 
         return new Castle(List.of(floor1, floor2, floor3));
