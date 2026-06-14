@@ -269,52 +269,39 @@ public class GameController {
             walls.add(new java.awt.Rectangle(mapSize - 40, 0, 40, mapSize));
         };
 
+        // Common wall layout (Maze)
+        List<java.awt.Rectangle> commonWalls = new java.util.ArrayList<>();
+        addPerimeter.accept(commonWalls);
+        commonWalls.add(new java.awt.Rectangle(400, 0, 40, 600));
+        commonWalls.add(new java.awt.Rectangle(0, 800, 800, 40));
+        commonWalls.add(new java.awt.Rectangle(800, 400, 40, 1200));
+        commonWalls.add(new java.awt.Rectangle(1200, 0, 40, 1600));
+        commonWalls.add(new java.awt.Rectangle(1200, 1600, 800, 40));
+        commonWalls.add(new java.awt.Rectangle(400, 1800, 40, 600));
+
         // Floor 1
-        List<java.awt.Rectangle> walls1 = new java.util.ArrayList<>();
-        addPerimeter.accept(walls1);
-        walls1.add(new java.awt.Rectangle(400, 0, 40, 600));
-        walls1.add(new java.awt.Rectangle(0, 800, 800, 40));
-        walls1.add(new java.awt.Rectangle(800, 400, 40, 1200));
-        walls1.add(new java.awt.Rectangle(1200, 0, 40, 1600));
-        walls1.add(new java.awt.Rectangle(1200, 1600, 800, 40));
-        walls1.add(new java.awt.Rectangle(400, 1800, 40, 600));
-        
         List<Room> rooms1 = List.of(
             new Room("Outer Outpost", "Scout hiding.", List.of(new Enemy("Martian Scout", 35, 7, 3, "Krrr!")), List.of(), 100, 1000, 180, 180),
             new Room("Warrior Den", "Warrior watch.", List.of(new Enemy("Martian Warrior", 45, 9, 4, "Halt!")), List.of(), 1000, 100, 180, 180),
             new Room("Exit Gate", "Final guard.", List.of(new Enemy("Martian Elite", 55, 11, 5, "Die!")), List.of(), 2000, 2000, 180, 180)
         );
-        floors.add(new Floor("Lower Bastion", rooms1, walls1, mapSize, mapSize));
+        floors.add(new Floor("Lower Bastion", rooms1, commonWalls, mapSize, mapSize));
 
         // Floor 2
-        List<java.awt.Rectangle> walls2 = new java.util.ArrayList<>();
-        addPerimeter.accept(walls2);
-        for(int i = 600; i < mapSize; i += 600) {
-            walls2.add(new java.awt.Rectangle(i, 0, 40, 1800));
-            walls2.add(new java.awt.Rectangle(600, i, 1800, 40));
-        }
-
         List<Room> rooms2 = List.of(
-            new Room("Research Lab", "Scientist.", List.of(new Enemy("Alien Scientist", 65, 13, 5, "Intrruption!")), List.of(), 100, 2000, 180, 180),
-            new Room("Data Vault", "Guardian.", List.of(new Enemy("Alien Guardian", 75, 15, 6, "Aagh!")), List.of(), 2000, 100, 180, 180),
-            new Room("Lab Command", "Master.", List.of(new Enemy("Alien Master", 85, 17, 7, "Stronger!")), List.of(), 1200, 1200, 180, 180)
+            new Room("Research Lab", "Scientist.", List.of(new Enemy("Alien Scientist", 65, 13, 5, "Intrruption!")), List.of(), 100, 1000, 180, 180),
+            new Room("Data Vault", "Guardian.", List.of(new Enemy("Alien Guardian", 75, 15, 6, "Aagh!")), List.of(), 1000, 100, 180, 180),
+            new Room("Lab Command", "Master.", List.of(new Enemy("Alien Master", 85, 17, 7, "Stronger!")), List.of(), 2000, 2000, 180, 180)
         );
-        floors.add(new Floor("Research Wing", rooms2, walls2, mapSize, mapSize));
+        floors.add(new Floor("Research Wing", rooms2, commonWalls, mapSize, mapSize));
 
         // Floor 3
-        List<java.awt.Rectangle> walls3 = new java.util.ArrayList<>();
-        addPerimeter.accept(walls3);
-        walls3.add(new java.awt.Rectangle(400, 400, 1600, 40));
-        walls3.add(new java.awt.Rectangle(400, 400, 40, 1600));
-        walls3.add(new java.awt.Rectangle(400, 2000, 1600, 40));
-        walls3.add(new java.awt.Rectangle(2000, 400, 40, 1640));
-
         List<Room> rooms3 = List.of(
-            new Room("Great Hall", "Royal Guard.", List.of(new Enemy("Royal Guard", 100, 20, 8, "Intruder!")), List.of(), 200, 200, 200, 200),
-            new Room("Sanctum", "Sentinel.", List.of(new Enemy("Elite Sentinel", 110, 22, 9, "Stop!")), List.of(), 2100, 2100, 200, 200),
-            new Room("Core Chamber", "Dark Alien.", List.of(new Enemy("Dark Alien", 300, 35, 18, "THE CRYSTAL IS MINE!", true)), List.of(), 1100, 1100, 300, 300)
+            new Room("Great Hall", "Royal Guard.", List.of(new Enemy("Royal Guard", 100, 20, 8, "Intruder!")), List.of(), 100, 1000, 180, 180),
+            new Room("Sanctum", "Sentinel.", List.of(new Enemy("Elite Sentinel", 110, 22, 9, "Stop!")), List.of(), 1000, 100, 180, 180),
+            new Room("Core Chamber", "Dark Alien.", List.of(new Enemy("Dark Alien", 300, 35, 18, "THE CRYSTAL IS MINE!", true)), List.of(), 2000, 2000, 300, 300)
         );
-        floors.add(new Floor("Throne Floor", rooms3, walls3, mapSize, mapSize));
+        floors.add(new Floor("Throne Floor", rooms3, commonWalls, mapSize, mapSize));
 
         return new Castle(floors);
     }

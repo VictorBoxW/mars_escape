@@ -60,9 +60,28 @@ public class ScenePanel extends JPanel {
         }
 
         drawTopDownAstronaut(g2d, player.getX(), player.getY());
+        
+        drawFogOfWar(g2d, player.getX(), player.getY(), floor.getWidth(), floor.getHeight());
 
         g2d.translate(camX, camY); 
         drawLocation(g2d, controller.getCastle());
+    }
+
+    private void drawFogOfWar(Graphics2D g2d, int px, int py, int fw, int fh) {
+        int visionRadius = 350;
+        
+        // Create a mask for the fog
+        java.awt.geom.Area fog = new java.awt.geom.Area(new java.awt.Rectangle(0, 0, fw, fh));
+        
+        // We use a radial gradient to create a smooth transition
+        float[] dist = {0.0f, 0.7f, 1.0f};
+        Color[] colors = {new Color(0, 0, 0, 0), new Color(0, 0, 0, 150), new Color(0, 0, 0, 255)};
+        
+        java.awt.RadialGradientPaint p = new java.awt.RadialGradientPaint(
+            px, py, visionRadius, dist, colors);
+        
+        g2d.setPaint(p);
+        g2d.fill(fog);
     }
 
     private void drawCombatScene(Graphics2D g2d, Enemy enemy) {
