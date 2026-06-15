@@ -59,6 +59,12 @@ public class ScenePanel extends JPanel {
             drawRoom(g2d, room);
         }
 
+        for (model.PickableItem pi : floor.getItems()) {
+            if (!pi.isPickedUp()) {
+                drawPickableItem(g2d, pi);
+            }
+        }
+
         drawTopDownAstronaut(g2d, player.getX(), player.getY());
         
         drawFogOfWar(g2d, player.getX(), player.getY(), floor.getWidth(), floor.getHeight());
@@ -271,5 +277,28 @@ public class ScenePanel extends JPanel {
         g2d.setColor(new Color(200, 200, 200));
         g2d.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 14));
         g2d.drawString("AREA CLEAR", 420, 110);
+    }
+
+    private void drawPickableItem(Graphics2D g, model.PickableItem pi) {
+        int x = pi.getX();
+        int y = pi.getY();
+        String name = pi.getItem().getName();
+
+        if (name.contains("Med Kit")) {
+            // Green rectangle for Med Kit
+            g.setColor(new Color(40, 200, 40));
+            g.fillRect(x, y, 30, 20);
+            g.setColor(Color.WHITE);
+            g.fillRect(x + 12, y + 4, 6, 12);
+            g.fillRect(x + 9, y + 7, 12, 6);
+        } else if (name.contains("Shield Cell")) {
+            // Dark blue cylinder for Shield Cell
+            g.setColor(new Color(0, 50, 150));
+            g.fillOval(x, y, 20, 10); // top
+            g.fillRect(x, y + 5, 20, 20); // body
+            g.fillOval(x, y + 20, 20, 10); // bottom
+            g.setColor(new Color(0, 150, 255, 150));
+            g.fillRect(x + 4, y + 8, 12, 14); // glow
+        }
     }
 }

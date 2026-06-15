@@ -9,13 +9,15 @@ public class Floor {
     private final String name;
     private final List<Room> rooms;
     private final List<Rectangle> walls;
+    private final List<PickableItem> items;
     private final int width;
     private final int height;
 
-    public Floor(String name, List<Room> rooms, List<Rectangle> walls, int width, int height) {
+    public Floor(String name, List<Room> rooms, List<Rectangle> walls, List<PickableItem> items, int width, int height) {
         this.name = name;
         this.rooms = new ArrayList<>(rooms);
         this.walls = new ArrayList<>(walls);
+        this.items = new ArrayList<>(items != null ? items : List.of());
         this.width = width;
         this.height = height;
     }
@@ -30,6 +32,10 @@ public class Floor {
 
     public List<Rectangle> getWalls() {
         return Collections.unmodifiableList(walls);
+    }
+
+    public List<PickableItem> getItems() {
+        return Collections.unmodifiableList(items);
     }
 
     public int getWidth() {

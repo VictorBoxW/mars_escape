@@ -81,8 +81,19 @@ public class GameController {
         Floor currentFloor = castle.getCurrentFloor();
         if (currentFloor != null && currentFloor.isWalkable(nextX, nextY)) {
             player.move(dx, dy);
+            checkItemPickups(currentFloor);
             checkEncounters();
             refreshView();
+        }
+    }
+
+    private void checkItemPickups(Floor floor) {
+        for (model.PickableItem pi : floor.getItems()) {
+            if (!pi.isPickedUp() && pi.intersects(player.getX(), player.getY(), 40, 40)) {
+                pi.setPickedUp(true);
+                player.addItem(pi.getItem());
+                gamePanel.appendLog("System: You have obtained a " + pi.getItem().getName() + "!");
+            }
         }
     }
 
@@ -280,28 +291,43 @@ public class GameController {
         commonWalls.add(new java.awt.Rectangle(400, 1800, 40, 600));
 
         // Floor 1
+        List<model.PickableItem> items1 = List.of(
+            new model.PickableItem(new Consumable("Med Kit", "Restores 40 health.", 40), 200, 2000),
+            new model.PickableItem(new ShieldItem("Shield Cell", "Provides +25 energy shield.", 25), 2200, 200),
+            new model.PickableItem(new ShieldItem("Shield Cell", "Provides +25 energy shield.", 25), 2000, 400)
+        );
         List<Room> rooms1 = List.of(
             new Room("Outer Outpost", "Scout hiding.", List.of(new Enemy("Martian Scout", 35, 7, 3, "Krrr!")), List.of(), 100, 1000, 180, 180),
             new Room("Warrior Den", "Warrior watch.", List.of(new Enemy("Martian Warrior", 45, 9, 4, "Halt!")), List.of(), 1000, 100, 180, 180),
             new Room("Exit Gate", "Final guard.", List.of(new Enemy("Martian Elite", 55, 11, 5, "Die!")), List.of(), 2000, 2000, 180, 180)
         );
-        floors.add(new Floor("Lower Bastion", rooms1, commonWalls, mapSize, mapSize));
+        floors.add(new Floor("Lower Bastion", rooms1, commonWalls, items1, mapSize, mapSize));
 
         // Floor 2
+        List<model.PickableItem> items2 = List.of(
+            new model.PickableItem(new Consumable("Med Kit", "Restores 40 health.", 40), 200, 2000),
+            new model.PickableItem(new ShieldItem("Shield Cell", "Provides +25 energy shield.", 25), 2200, 200),
+            new model.PickableItem(new ShieldItem("Shield Cell", "Provides +25 energy shield.", 25), 2000, 400)
+        );
         List<Room> rooms2 = List.of(
             new Room("Research Lab", "Scientist.", List.of(new Enemy("Alien Scientist", 65, 13, 5, "Intrruption!")), List.of(), 100, 1000, 180, 180),
             new Room("Data Vault", "Guardian.", List.of(new Enemy("Alien Guardian", 75, 15, 6, "Aagh!")), List.of(), 1000, 100, 180, 180),
             new Room("Lab Command", "Master.", List.of(new Enemy("Alien Master", 85, 17, 7, "Stronger!")), List.of(), 2000, 2000, 180, 180)
         );
-        floors.add(new Floor("Research Wing", rooms2, commonWalls, mapSize, mapSize));
+        floors.add(new Floor("Research Wing", rooms2, commonWalls, items2, mapSize, mapSize));
 
         // Floor 3
+        List<model.PickableItem> items3 = List.of(
+            new model.PickableItem(new Consumable("Med Kit", "Restores 40 health.", 40), 200, 2000),
+            new model.PickableItem(new ShieldItem("Shield Cell", "Provides +25 energy shield.", 25), 2200, 200),
+            new model.PickableItem(new ShieldItem("Shield Cell", "Provides +25 energy shield.", 25), 2000, 400)
+        );
         List<Room> rooms3 = List.of(
             new Room("Great Hall", "Royal Guard.", List.of(new Enemy("Royal Guard", 100, 20, 8, "Intruder!")), List.of(), 100, 1000, 180, 180),
             new Room("Sanctum", "Sentinel.", List.of(new Enemy("Elite Sentinel", 110, 22, 9, "Stop!")), List.of(), 1000, 100, 180, 180),
             new Room("Core Chamber", "Dark Alien.", List.of(new Enemy("Dark Alien", 300, 35, 18, "THE CRYSTAL IS MINE!", true)), List.of(), 2000, 2000, 300, 300)
         );
-        floors.add(new Floor("Throne Floor", rooms3, commonWalls, mapSize, mapSize));
+        floors.add(new Floor("Throne Floor", rooms3, commonWalls, items3, mapSize, mapSize));
 
         return new Castle(floors);
     }
