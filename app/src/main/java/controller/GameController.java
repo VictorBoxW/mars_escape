@@ -289,12 +289,13 @@ public class GameController {
         commonWalls.add(new java.awt.Rectangle(1200, 0, 40, 1600));
         commonWalls.add(new java.awt.Rectangle(1200, 1600, 800, 40));
         commonWalls.add(new java.awt.Rectangle(400, 1800, 40, 600));
+        commonWalls.add(new java.awt.Rectangle(1240, 1100, 1120, 40));
 
         // Floor 1
         List<model.PickableItem> items1 = List.of(
             new model.PickableItem(new Consumable("Med Kit", "Restores 40 health.", 40), 200, 2000),
-            new model.PickableItem(new ShieldItem("Shield Cell", "Provides +25 energy shield.", 25), 2200, 200),
-            new model.PickableItem(new ShieldItem("Shield Cell", "Provides +25 energy shield.", 25), 2000, 400)
+            new model.PickableItem(new ShieldItem("Shield Cell", "Provides +25 energy shield.", 25), 2280, 1200),
+            new model.PickableItem(new ShieldItem("Shield Cell", "Provides +25 energy shield.", 25), 1300, 1540)
         );
         List<Room> rooms1 = List.of(
             new Room("Outer Outpost", "Scout hiding.", List.of(new Enemy("Martian Scout", 35, 7, 3, "Krrr!")), List.of(), 100, 1000, 180, 180),
@@ -306,8 +307,8 @@ public class GameController {
         // Floor 2
         List<model.PickableItem> items2 = List.of(
             new model.PickableItem(new Consumable("Med Kit", "Restores 40 health.", 40), 200, 2000),
-            new model.PickableItem(new ShieldItem("Shield Cell", "Provides +25 energy shield.", 25), 2200, 200),
-            new model.PickableItem(new ShieldItem("Shield Cell", "Provides +25 energy shield.", 25), 2000, 400)
+            new model.PickableItem(new ShieldItem("Shield Cell", "Provides +25 energy shield.", 25), 2280, 1200),
+            new model.PickableItem(new ShieldItem("Shield Cell", "Provides +25 energy shield.", 25), 1300, 1540)
         );
         List<Room> rooms2 = List.of(
             new Room("Research Lab", "Scientist.", List.of(new Enemy("Alien Scientist", 65, 13, 5, "Intrruption!")), List.of(), 100, 1000, 180, 180),
@@ -319,8 +320,8 @@ public class GameController {
         // Floor 3
         List<model.PickableItem> items3 = List.of(
             new model.PickableItem(new Consumable("Med Kit", "Restores 40 health.", 40), 200, 2000),
-            new model.PickableItem(new ShieldItem("Shield Cell", "Provides +25 energy shield.", 25), 2200, 200),
-            new model.PickableItem(new ShieldItem("Shield Cell", "Provides +25 energy shield.", 25), 2000, 400)
+            new model.PickableItem(new ShieldItem("Shield Cell", "Provides +25 energy shield.", 25), 2280, 1200),
+            new model.PickableItem(new ShieldItem("Shield Cell", "Provides +25 energy shield.", 25), 1300, 1540)
         );
         List<Room> rooms3 = List.of(
             new Room("Great Hall", "Royal Guard.", List.of(new Enemy("Royal Guard", 100, 20, 8, "Intruder!")), List.of(), 100, 1000, 180, 180),

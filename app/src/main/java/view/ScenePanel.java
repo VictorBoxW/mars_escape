@@ -29,8 +29,6 @@ public class ScenePanel extends JPanel {
     protected void paintComponent(Graphics graphics) {
         super.paintComponent(graphics);
         Graphics2D g2d = (Graphics2D) graphics;
-        g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-
         Enemy enemy = controller.getCurrentEnemy();
 
         if (enemy != null && enemy.isAlive()) {
@@ -153,9 +151,12 @@ public class ScenePanel extends JPanel {
         }
 
         if (floor != null) {
-            random.setSeed(777);
-            for (int i = 0; i < 20; i++) {
-                drawTorch(g2d, random.nextInt(w), random.nextInt(h));
+            for (int i = 200; i < w; i += 400) {
+                for (int j = 200; j < h; j += 400) {
+                    // Skip torches in the new upper corridor to keep it clean
+                    if (i > 1240 && j < 1100) continue;
+                    drawTorch(g2d, i, j);
+                }
             }
         } else {
             drawTorch(g2d, 100, 100);
