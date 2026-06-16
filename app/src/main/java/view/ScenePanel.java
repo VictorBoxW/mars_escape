@@ -114,21 +114,30 @@ public class ScenePanel extends JPanel {
         g2d.translate(x, y);
         g2d.rotate(Math.toRadians(rotation));
 
-        // Draw Feet with walking animation
-        int footOffset = (int) (Math.sin(walkPhase) * 10);
+        // Legs/Boots (from combat style)
+        int footOffset = (int) (Math.sin(walkPhase) * 12);
         g2d.setColor(new Color(40, 40, 40));
-        g2d.fillRect(-15, 10 + footOffset, 12, 18); // Left foot
-        g2d.fillRect(3, 10 - footOffset, 12, 18);  // Right foot
-
-        // Body/Suit
-        g2d.setColor(Color.WHITE);
-        g2d.fillOval(-20, -20, 40, 40);
-        g2d.setColor(new Color(180, 180, 180));
-        g2d.fillRect(-15, 12, 30, 8);
+        g2d.fillRect(-18, 10 + footOffset, 12, 15); // Left boot
+        g2d.fillRect(6, 10 - footOffset, 12, 15);  // Right boot
         
-        // Helmet Visor
-        g2d.setColor(new Color(80, 200, 255));
-        g2d.fillRoundRect(-12, -18, 24, 10, 6, 6);
+        g2d.setColor(Color.WHITE);
+        g2d.fillRect(-15, 0 + footOffset, 6, 12); // Left leg
+        g2d.fillRect(9, 0 - footOffset, 6, 12);   // Right leg
+
+        // Backpack/Body (White suit)
+        g2d.setColor(new Color(220, 220, 220));
+        g2d.fillRoundRect(-22, -10, 44, 28, 8, 8);
+        
+        // Suit Body
+        g2d.setColor(Color.WHITE);
+        g2d.fillOval(-20, -15, 40, 35);
+        
+        // Helmet (White circle)
+        g2d.fillOval(-16, -28, 32, 32);
+        
+        // Visor (Glowing blue visor)
+        g2d.setColor(new Color(100, 220, 255));
+        g2d.fillRoundRect(-12, -24, 24, 12, 6, 6);
 
         g2d.rotate(-Math.toRadians(rotation));
         g2d.translate(-x, -y);
@@ -143,26 +152,34 @@ public class ScenePanel extends JPanel {
         } else {
             colors = new Color[]{new Color(0, 255, 0, 100), new Color(0, 255, 0, 0)};
         }
-        java.awt.RadialGradientPaint glow = new java.awt.RadialGradientPaint(x, y, 70, dist, colors);
+        java.awt.RadialGradientPaint glow = new java.awt.RadialGradientPaint(x, y, 75, dist, colors);
         g2d.setPaint(glow);
-        g2d.fillOval(x - 70, y - 70, 140, 140);
+        g2d.fillOval(x - 75, y - 75, 150, 150);
 
-        // Alien Body
+        // Alien Body (Visible from above)
         if (isBoss) {
             g2d.setColor(new Color(20, 20, 20));
         } else {
-            g2d.setColor(new Color(40, 180, 40));
+            g2d.setColor(new Color(45, 150, 45));
         }
-        g2d.fillOval(x - 22, y - 22, 44, 44);
+        g2d.fillOval(x - 20, y - 5, 40, 30);
         
-        // Eyes
+        // Large Alien Head (Combat style)
+        if (isBoss) {
+            g2d.setColor(new Color(30, 30, 30));
+        } else {
+            g2d.setColor(new Color(60, 190, 60));
+        }
+        g2d.fillOval(x - 28, y - 35, 56, 45); 
+        
+        // Almond Eyes (Combat style)
         if (isBoss) {
             g2d.setColor(new Color(255, 0, 0));
         } else {
             g2d.setColor(Color.BLACK);
         }
-        g2d.fillOval(x - 14, y - 12, 10, 14);
-        g2d.fillOval(x + 4, y - 12, 10, 14);
+        g2d.fillOval(x - 20, y - 22, 15, 22); // Left eye
+        g2d.fillOval(x + 5, y - 22, 15, 22);  // Right eye
     }
 
     private void drawBackground(Graphics2D g2d, Floor floor) {
