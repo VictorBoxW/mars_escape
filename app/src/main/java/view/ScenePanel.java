@@ -63,7 +63,7 @@ public class ScenePanel extends JPanel {
             }
         }
 
-        drawTopDownAstronaut(g2d, player.getX(), player.getY());
+        drawTopDownAstronaut(g2d, player.getX(), player.getY(), player.getRotation(), player.getWalkPhase());
         
         drawFogOfWar(g2d, player.getX(), player.getY(), floor.getWidth(), floor.getHeight());
 
@@ -105,23 +105,62 @@ public class ScenePanel extends JPanel {
     private void drawRoom(Graphics2D g2d, model.Room room) {
         if (!room.isCleared()) {
             // Boxes and names removed as requested
-            drawTopDownAlien(g2d, room.getX() + room.getWidth()/2, room.getY() + room.getHeight()/2);
+            boolean isBoss = room.getName().equals("Core Chamber");
+            drawTopDownAlien(g2d, room.getX() + room.getWidth()/2, room.getY() + room.getHeight()/2, isBoss);
         }
     }
 
-    private void drawTopDownAstronaut(Graphics2D g2d, int x, int y) {
+    private void drawTopDownAstronaut(Graphics2D g2d, int x, int y, double rotation, double walkPhase) {
+        g2d.translate(x, y);
+        g2d.rotate(Math.toRadians(rotation));
+
+        // Draw Feet with walking animation
+        int footOffset = (int) (Math.sin(walkPhase) * 10);
+        g2d.setColor(new Color(40, 40, 40));
+        g2d.fillRect(-15, 10 + footOffset, 12, 18); // Left foot
+        g2d.fillRect(3, 10 - footOffset, 12, 18);  // Right foot
+
+        // Body/Suit
         g2d.setColor(Color.WHITE);
-        g2d.fillOval(x - 20, y - 20, 40, 40);
+        g2d.fillOval(-20, -20, 40, 40);
         g2d.setColor(new Color(180, 180, 180));
-        g2d.fillRect(x - 15, y + 12, 30, 10);
+        g2d.fillRect(-15, 12, 30, 8);
+        
+        // Helmet Visor
         g2d.setColor(new Color(80, 200, 255));
-        g2d.fillRoundRect(x - 12, y - 18, 24, 10, 6, 6);
+        g2d.fillRoundRect(-12, -18, 24, 10, 6, 6);
+
+        g2d.rotate(-Math.toRadians(rotation));
+        g2d.translate(-x, -y);
     }
 
-    private void drawTopDownAlien(Graphics2D g2d, int x, int y) {
-        g2d.setColor(new Color(40, 180, 40));
+    private void drawTopDownAlien(Graphics2D g2d, int x, int y, boolean isBoss) {
+        // Alien Glow
+        float[] dist = {0.0f, 1.0f};
+        Color[] colors;
+        if (isBoss) {
+            colors = new Color[]{new Color(50, 0, 50, 150), new Color(0, 0, 0, 0)};
+        } else {
+            colors = new Color[]{new Color(0, 255, 0, 100), new Color(0, 255, 0, 0)};
+        }
+        java.awt.RadialGradientPaint glow = new java.awt.RadialGradientPaint(x, y, 70, dist, colors);
+        g2d.setPaint(glow);
+        g2d.fillOval(x - 70, y - 70, 140, 140);
+
+        // Alien Body
+        if (isBoss) {
+            g2d.setColor(new Color(20, 20, 20));
+        } else {
+            g2d.setColor(new Color(40, 180, 40));
+        }
         g2d.fillOval(x - 22, y - 22, 44, 44);
-        g2d.setColor(Color.BLACK);
+        
+        // Eyes
+        if (isBoss) {
+            g2d.setColor(new Color(255, 0, 0));
+        } else {
+            g2d.setColor(Color.BLACK);
+        }
         g2d.fillOval(x - 14, y - 12, 10, 14);
         g2d.fillOval(x + 4, y - 12, 10, 14);
     }

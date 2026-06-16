@@ -11,12 +11,16 @@ public class Player extends Character {
     private boolean hasEnergyCrystal;
     private int x;
     private int y;
+    private double rotation;
+    private double walkPhase;
 
     public Player(String name) {
         super(name, 100, 5, 2);
         this.inventory = new ArrayList<>();
         this.x = 440; // Center
         this.y = 550; // Near bottom
+        this.rotation = 0; // Facing Up
+        this.walkPhase = 0;
     }
 
     public int getX() {
@@ -25,6 +29,25 @@ public class Player extends Character {
 
     public int getY() {
         return y;
+    }
+
+    public double getRotation() {
+        return rotation;
+    }
+
+    public void setRotation(double rotation) {
+        this.rotation = rotation;
+    }
+
+    public double getWalkPhase() {
+        return walkPhase;
+    }
+
+    public void updateWalkPhase(double delta) {
+        this.walkPhase += delta;
+        if (this.walkPhase > Math.PI * 2) {
+            this.walkPhase -= Math.PI * 2;
+        }
     }
 
     public void setPosition(int x, int y) {

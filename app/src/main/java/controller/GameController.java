@@ -78,6 +78,13 @@ public class GameController {
         int nextX = player.getX() + dx;
         int nextY = player.getY() + dy;
         
+        // Update rotation based on direction
+        if (dx != 0 || dy != 0) {
+            double angle = Math.toDegrees(Math.atan2(dy, dx)) + 90;
+            player.setRotation(angle);
+            player.updateWalkPhase(0.3); // Progress animation
+        }
+
         Floor currentFloor = castle.getCurrentFloor();
         if (currentFloor != null && currentFloor.isWalkable(nextX, nextY)) {
             player.move(dx, dy);
