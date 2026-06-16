@@ -63,7 +63,20 @@ public class ScenePanel extends JPanel {
             }
         }
 
+        for (model.Door door : floor.getDoors()) {
+            drawDoor(g2d, door);
+        }
+
         drawTopDownAstronaut(g2d, player.getX(), player.getY(), player.getRotation(), player.getWalkPhase());
+        
+        // Draw interaction prompt
+        for (model.Door door : floor.getDoors()) {
+            if (door.isNear(player.getX(), player.getY(), 100)) {
+                String action = door.isOpen() ? "Close" : "Open";
+                drawPrompt(g2d, "Press 'O' to " + action + " Door", player.getX(), player.getY() - 60);
+                break;
+            }
+        }
         
         drawFogOfWar(g2d, player.getX(), player.getY(), floor.getWidth(), floor.getHeight());
 
@@ -211,6 +224,8 @@ public class ScenePanel extends JPanel {
                 for (int j = 200; j < h; j += 400) {
                     // Skip torches in the new upper corridor to keep it clean
                     if (i > 1240 && j < 1100) continue;
+                    // Skip torch overlapping with Med Kit door
+                    if (i == 200 && j == 1800) continue;
                     drawTorch(g2d, i, j);
                 }
             }
@@ -357,5 +372,55 @@ public class ScenePanel extends JPanel {
             g.setColor(new Color(0, 150, 255, 150));
             g.fillRect(x + 4, y + 8, 12, 14); // glow
         }
+    }
+
+    private void drawDoor(Graphics2D g, model.Door door) {
+        int x = door.getX();
+        int y = door.getY();
+        int w = door.getWidth();
+        int h = door.getHeight();
+        double progress = door.getAnimProgress();
+
+        // Slide two panels out from the center
+        int panelW = w / 2;
+        int slideOffset = (int) (panelW * progress);
+
+        g.setColor(new Color(101, 67, 33)); // Dark Brown
+        
+        // Left Panel
+        g.fillRect(x - slideOffset, y, panelW, h);
+        g.setColor(new Color(60, 40, 20));
+        g.drawRect(x - slideOffset, y, panelW, h);
+        g.drawRect(x - slideOffset + 5, y + 5, panelW - 10, h - 10);
+        
+        // Right Panel
+        g.setColor(new Color(101, 67, 33));
+        g.fillRect(x + panelW + slideOffset, y, panelW, h);
+        g.setColor(new Color(60, 40, 20));
+        g.drawRect(x + panelW + slideOffset, y, panelW, h);
+        g.drawRect(x + panelW + slideOffset + 5, y + 5, panelW - 10, h - 10);
+
+        // Lock (only visible when closed or partially open)
+        if (progress < 0.8) {
+            int alpha = (int) (255 * (1.0 - progress));
+            g.setColor(new Color(255, 255, 0, alpha));
+            g.fillOval(x + panelW - 4 - slideOffset, y + (h / 2) - 4, 8, 8);
+            g.fillOval(x + panelW - 4 + slideOffset, y + (h / 2) - 4, 8, 8);
+        }
+    }
+
+    private void drawPrompt(Graphics2D g, String text, int x, int y) {
+        g.setFont(new Font(Font.MONOSPACED, Font.BOLD, 14));
+        int textW = g.getFontMetrics().stringWidth(text);
+        
+        // Draw bubble
+        g.setColor(new Color(0, 0, 0, 180));
+        g.fillRoundRect(x - (textW / 2) - 10, y - 20, textW + 20, 30, 10, 10);
+        g.setColor(new Color(50, 180, 255));
+        g.drawRoundRect(x - (textW / 2) - 10, y - 20, textW + 20, 30, 10, 10);
+        
+        // Draw text
+        g.setColor(Color.WHITE);
+        g.drawString(text, x - (textW / 2), y);
     }
 }

@@ -69,7 +69,8 @@ public class GameWindow extends JFrame {
             java.awt.event.KeyEvent.VK_UP, java.awt.event.KeyEvent.VK_W,
             java.awt.event.KeyEvent.VK_DOWN, java.awt.event.KeyEvent.VK_S,
             java.awt.event.KeyEvent.VK_LEFT, java.awt.event.KeyEvent.VK_A,
-            java.awt.event.KeyEvent.VK_RIGHT, java.awt.event.KeyEvent.VK_D
+            java.awt.event.KeyEvent.VK_RIGHT, java.awt.event.KeyEvent.VK_D,
+            java.awt.event.KeyEvent.VK_O
         };
 
         for (int keyCode : keyCodes) {
@@ -81,6 +82,9 @@ public class GameWindow extends JFrame {
                 @Override
                 public void actionPerformed(ActionEvent e) {
                     pressedKeys.add(keyCode);
+                    if (keyCode == java.awt.event.KeyEvent.VK_O) {
+                        controller.interact();
+                    }
                 }
             });
 
@@ -97,6 +101,7 @@ public class GameWindow extends JFrame {
     private void setupMovementTimer() {
         int moveAmount = 8; // Slowed down from 12 for better control
         movementTimer = new javax.swing.Timer(20, e -> {
+            controller.update();
             if (pressedKeys.isEmpty()) return;
 
             int dx = 0;

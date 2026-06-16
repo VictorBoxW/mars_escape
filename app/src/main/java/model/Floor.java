@@ -10,6 +10,7 @@ public class Floor {
     private final List<Room> rooms;
     private final List<Rectangle> walls;
     private final List<PickableItem> items;
+    private final List<Door> doors;
     private final int width;
     private final int height;
 
@@ -18,8 +19,23 @@ public class Floor {
         this.rooms = new ArrayList<>(rooms);
         this.walls = new ArrayList<>(walls);
         this.items = new ArrayList<>(items != null ? items : List.of());
+        this.doors = new ArrayList<>();
         this.width = width;
         this.height = height;
+    }
+
+    public void addDoor(Door door) {
+        doors.add(door);
+    }
+
+    public List<Door> getDoors() {
+        return Collections.unmodifiableList(doors);
+    }
+
+    public void updateDoors() {
+        for (Door door : doors) {
+            door.update();
+        }
     }
 
     public String getName() {
@@ -74,6 +90,13 @@ public class Floor {
         Rectangle playerBounds = new Rectangle(x - 20, y - 20, 40, 40);
         for (Rectangle wall : walls) {
             if (wall.intersects(playerBounds)) {
+                return false;
+            }
+        }
+
+        // Check for closed doors
+        for (Door door : doors) {
+            if (!door.isOpen() && door.getBounds().intersects(playerBounds)) {
                 return false;
             }
         }

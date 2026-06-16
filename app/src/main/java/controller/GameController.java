@@ -4,6 +4,7 @@ import java.util.List;
 import model.Armor;
 import model.Castle;
 import model.Consumable;
+import model.Door;
 import model.Enemy;
 import model.Floor;
 import model.Item;
@@ -91,6 +92,29 @@ public class GameController {
             checkItemPickups(currentFloor);
             checkEncounters();
             refreshView();
+        }
+    }
+
+    public void update() {
+        Floor currentFloor = castle.getCurrentFloor();
+        if (currentFloor != null) {
+            currentFloor.updateDoors();
+            refreshView();
+        }
+    }
+
+    public void interact() {
+        if (gameOver || currentEnemy != null) return;
+
+        Floor currentFloor = castle.getCurrentFloor();
+        if (currentFloor != null) {
+            for (Door door : currentFloor.getDoors()) {
+                if (door.isNear(player.getX(), player.getY(), 100)) {
+                    door.setOpen(!door.isOpen());
+                    refreshView();
+                    return; // Only interact with one door at a time
+                }
+            }
         }
     }
 
@@ -309,7 +333,11 @@ public class GameController {
             new Room("Warrior Den", "Warrior watch.", List.of(new Enemy("Martian Warrior", 45, 9, 4, "Halt!")), List.of(), 1000, 100, 180, 180),
             new Room("Exit Gate", "Final guard.", List.of(new Enemy("Martian Elite", 55, 11, 5, "Die!")), List.of(), 2000, 2000, 180, 180)
         );
-        floors.add(new Floor("Lower Bastion", rooms1, commonWalls, items1, mapSize, mapSize));
+        Floor f1 = new Floor("Lower Bastion", rooms1, commonWalls, items1, mapSize, mapSize);
+        // Big brownish doors in maze gaps
+        f1.addDoor(new Door(40, 1800, 360, 40));    // Med Kit area entry gap
+        f1.addDoor(new Door(2000, 1600, 360, 40));  // Shield area entry gap
+        floors.add(f1);
 
         // Floor 2
         List<model.PickableItem> items2 = List.of(
@@ -322,7 +350,10 @@ public class GameController {
             new Room("Data Vault", "Guardian.", List.of(new Enemy("Alien Guardian", 75, 15, 6, "Aagh!")), List.of(), 1000, 100, 180, 180),
             new Room("Lab Command", "Master.", List.of(new Enemy("Alien Master", 85, 17, 7, "Stronger!")), List.of(), 2000, 2000, 180, 180)
         );
-        floors.add(new Floor("Research Wing", rooms2, commonWalls, items2, mapSize, mapSize));
+        Floor f2 = new Floor("Research Wing", rooms2, commonWalls, items2, mapSize, mapSize);
+        f2.addDoor(new Door(40, 1800, 360, 40));
+        f2.addDoor(new Door(2000, 1600, 360, 40));
+        floors.add(f2);
 
         // Floor 3
         List<model.PickableItem> items3 = List.of(
@@ -335,7 +366,10 @@ public class GameController {
             new Room("Sanctum", "Sentinel.", List.of(new Enemy("Elite Sentinel", 110, 22, 9, "Stop!")), List.of(), 1000, 100, 180, 180),
             new Room("Core Chamber", "Dark Alien.", List.of(new Enemy("Dark Alien", 300, 35, 18, "THE CRYSTAL IS MINE!", true)), List.of(), 2000, 2000, 300, 300)
         );
-        floors.add(new Floor("Throne Floor", rooms3, commonWalls, items3, mapSize, mapSize));
+        Floor f3 = new Floor("Throne Floor", rooms3, commonWalls, items3, mapSize, mapSize);
+        f3.addDoor(new Door(40, 1800, 360, 40));
+        f3.addDoor(new Door(2000, 1600, 360, 40));
+        floors.add(f3);
 
         return new Castle(floors);
     }
