@@ -4,10 +4,12 @@ import java.util.List;
 import model.Armor;
 import model.Castle;
 import model.Consumable;
+import model.Diamond;
 import model.Door;
 import model.Enemy;
 import model.Floor;
 import model.Item;
+import model.Key;
 import model.Player;
 import model.Room;
 import model.ShieldItem;
@@ -87,11 +89,32 @@ public class GameController {
         }
 
         Floor currentFloor = castle.getCurrentFloor();
-        if (currentFloor != null && currentFloor.isWalkable(nextX, nextY)) {
-            player.move(dx, dy);
-            checkItemPickups(currentFloor);
-            checkEncounters();
-            refreshView();
+        if (currentFloor != null) {
+            // Check for exit door transition
+            for (Door door : currentFloor.getDoors()) {
+                if (door.isExitDoor() && door.isOpen() && door.getBounds().contains(nextX, nextY)) {
+                    if (castle.getCurrentFloorNumber() == castle.getFloorCount()) {
+                        // VICTORY on Floor 3
+                        gamePanel.appendLog("The astronaut takes the Energy Diamond and the fuel key.");
+                        gamePanel.appendLog("Mission Success: The supplies are secured. It's time to fly home!");
+                        gameOver = true;
+                        java.awt.Window window = javax.swing.SwingUtilities.getWindowAncestor(gamePanel);
+                        if (window instanceof view.GameWindow) {
+                            ((view.GameWindow) window).showGameOverDialog(true);
+                        }
+                    } else {
+                        continueExploring(); // Advance to next floor
+                    }
+                    return;
+                }
+            }
+
+            if (currentFloor.isWalkable(nextX, nextY)) {
+                player.move(dx, dy);
+                checkItemPickups(currentFloor);
+                checkEncounters();
+                refreshView();
+            }
         }
     }
 
@@ -110,9 +133,40 @@ public class GameController {
         if (currentFloor != null) {
             for (Door door : currentFloor.getDoors()) {
                 if (door.isNear(player.getX(), player.getY(), 100)) {
-                    door.setOpen(!door.isOpen());
+                    if (door.isLocked()) {
+                        // Check for requirements
+                        if (castle.getCurrentFloorNumber() == 3) {
+                            // Floor 3 needs Key AND Diamond
+                            boolean hasKey = player.getInventory().stream()
+                                .anyMatch(i -> i instanceof Key && ((Key)i).getFloorLevel() == 3);
+                            boolean hasDiamond = player.getInventory().stream()
+                                .anyMatch(i -> i instanceof Diamond);
+
+                            if (hasKey && hasDiamond) {
+                                door.setLocked(false);
+                                door.setOpen(true);
+                                gamePanel.appendLog("System: Exit Door unlocked using the Diamond and Key!");
+                            } else {
+                                gamePanel.appendLog("System: You have to obtain both the Key and the Diamond to open this door.");
+                            }
+                        } else {
+                            // Other floors just need Key
+                            boolean hasKey = player.getInventory().stream()
+                                .anyMatch(i -> i instanceof Key && ((Key)i).getFloorLevel() == castle.getCurrentFloorNumber());
+                            
+                            if (hasKey) {
+                                door.setLocked(false);
+                                door.setOpen(true);
+                                gamePanel.appendLog("System: Door unlocked using the Access Key!");
+                            } else {
+                                gamePanel.appendLog("System: You have to obtain the key in order to open the door.");
+                            }
+                        }
+                    } else {
+                        door.setOpen(!door.isOpen());
+                    }
                     refreshView();
-                    return; // Only interact with one door at a time
+                    return;
                 }
             }
         }
@@ -167,12 +221,8 @@ public class GameController {
     }
 
     public boolean canContinue() {
-        if (gameOver || currentEnemy != null || castle == null) {
-            return false;
-        }
-
-        Floor floor = castle.getCurrentFloor();
-        return floor != null && floor.isCleared();
+        // Now advancement is through the exit door
+        return false;
     }
 
     private boolean canFight() {
@@ -195,22 +245,6 @@ public class GameController {
     private void handleEnemyDefeated() {
         if (currentEnemy == null) return;
 
-        if (currentEnemy.isBoss()) {
-            player.obtainEnergyCrystal();
-            castle.takeEnergyCrystal();
-            currentEnemy = null;
-            gameOver = true;
-            gamePanel.appendLog("The astronaut takes the energy crystal from the Core Chamber.");
-            gamePanel.appendLog("Mission complete: The fuel is secured. It's time to fly home.");
-            
-            // Notify UI of victory
-            java.awt.Window window = javax.swing.SwingUtilities.getWindowAncestor(gamePanel);
-            if (window instanceof view.GameWindow) {
-                ((view.GameWindow) window).showGameOverDialog(true);
-            }
-            return;
-        }
-
         Floor floor = castle.getCurrentFloor();
         if (floor == null) {
             currentEnemy = null;
@@ -219,7 +253,6 @@ public class GameController {
 
         Room room = floor.getRoomAt(player.getX(), player.getY());
         if (room == null) {
-            // Fallback: search for any room that has this enemy (defensive)
             room = floor.getRooms().stream()
                         .filter(r -> r.getEnemies().contains(currentEnemy))
                         .findFirst()
@@ -241,6 +274,23 @@ public class GameController {
         currentEnemy = null;
         if (room != null) {
             claimRoomRewards(room);
+            
+            // Handle drops based on floor
+            if (floor.isCleared()) {
+                if (castle.getCurrentFloorNumber() == 3) {
+                    // Final Boss drops Key and Diamond
+                    Key key = new Key(3);
+                    Diamond diamond = new Diamond();
+                    floor.addItem(new model.PickableItem(key, player.getX() + 40, player.getY()));
+                    floor.addItem(new model.PickableItem(diamond, player.getX() - 40, player.getY()));
+                    gamePanel.appendLog("System: The Dark Alien has dropped the fuel key and the ENERGY DIAMOND!");
+                } else {
+                    // Floor 1 & 2 drop Key
+                    Key key = new Key(castle.getCurrentFloorNumber());
+                    floor.addItem(new model.PickableItem(key, player.getX() + 40, player.getY()));
+                    gamePanel.appendLog("System: The final guardian has dropped a glowing Access Key!");
+                }
+            }
         }
         gamePanel.appendLog("Combat over. You are free to move.");
     }
@@ -258,6 +308,12 @@ public class GameController {
 
         Room room = floor.getRoomAt(player.getX(), player.getY());
         if (room != null && !room.isCleared()) {
+            // Boss Gate Check
+            if (room.getName().equals("Core Chamber") && !floor.canAccessBoss()) {
+                gamePanel.appendLog("System: You have to defeat both Aliens before confronting the Dark Alien boss!");
+                return;
+            }
+
             currentEnemy = room.nextEnemy().orElse(null);
             if (currentEnemy != null) {
                 gamePanel.appendLog("System: Entering " + room.getName());
@@ -307,7 +363,9 @@ public class GameController {
         java.util.function.Consumer<List<java.awt.Rectangle>> addPerimeter = (walls) -> {
             walls.add(new java.awt.Rectangle(0, 0, mapSize, 40));
             walls.add(new java.awt.Rectangle(0, 0, 40, mapSize));
-            walls.add(new java.awt.Rectangle(0, mapSize - 40, mapSize, 40));
+            // Bottom wall with gap for exit door
+            walls.add(new java.awt.Rectangle(0, mapSize - 40, 2000, 40));
+            walls.add(new java.awt.Rectangle(2180, mapSize - 40, 220, 40));
             walls.add(new java.awt.Rectangle(mapSize - 40, 0, 40, mapSize));
         };
 
@@ -337,6 +395,8 @@ public class GameController {
         // Big brownish doors in maze gaps
         f1.addDoor(new Door(40, 1800, 360, 40));    // Med Kit area entry gap
         f1.addDoor(new Door(2000, 1600, 360, 40));  // Shield area entry gap
+        // Key-locked Exit Door in the bottom wall
+        f1.addDoor(new Door(2000, 2360, 180, 40, true, true)); 
         floors.add(f1);
 
         // Floor 2
@@ -353,6 +413,8 @@ public class GameController {
         Floor f2 = new Floor("Research Wing", rooms2, commonWalls, items2, mapSize, mapSize);
         f2.addDoor(new Door(40, 1800, 360, 40));
         f2.addDoor(new Door(2000, 1600, 360, 40));
+        // Key-locked Exit Door in the bottom wall
+        f2.addDoor(new Door(2000, 2360, 180, 40, true, true));
         floors.add(f2);
 
         // Floor 3
@@ -369,6 +431,8 @@ public class GameController {
         Floor f3 = new Floor("Throne Floor", rooms3, commonWalls, items3, mapSize, mapSize);
         f3.addDoor(new Door(40, 1800, 360, 40));
         f3.addDoor(new Door(2000, 1600, 360, 40));
+        // Key-locked Exit Door on Floor 3
+        f3.addDoor(new Door(2000, 2360, 180, 40, true, true));
         floors.add(f3);
 
         return new Castle(floors);

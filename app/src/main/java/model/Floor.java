@@ -54,6 +54,10 @@ public class Floor {
         return Collections.unmodifiableList(items);
     }
 
+    public void addItem(PickableItem item) {
+        items.add(item);
+    }
+
     public int getWidth() {
         return width;
     }
@@ -64,6 +68,12 @@ public class Floor {
 
     public Room getCurrentRoom() {
         return rooms.stream().filter(r -> !r.isCleared()).findFirst().orElse(null);
+    }
+
+    public boolean canAccessBoss() {
+        return rooms.stream()
+                .filter(r -> !r.getName().equals("Core Chamber"))
+                .allMatch(Room::isCleared);
     }
 
     public boolean isCleared() {

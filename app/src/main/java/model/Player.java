@@ -15,7 +15,7 @@ public class Player extends Character {
     private double walkPhase;
 
     public Player(String name) {
-        super(name, 100, 5, 2);
+        super(name, 100, 8, 2);
         this.inventory = new ArrayList<>();
         this.x = 440; // Center
         this.y = 550; // Near bottom

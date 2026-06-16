@@ -10,8 +10,10 @@ import java.awt.RenderingHints;
 import java.util.Random;
 import javax.swing.JPanel;
 import model.Castle;
+import model.Diamond;
 import model.Enemy;
 import model.Floor;
+import model.Key;
 import model.Player;
 import model.Room;
 
@@ -72,9 +74,47 @@ public class ScenePanel extends JPanel {
         // Draw interaction prompt
         for (model.Door door : floor.getDoors()) {
             if (door.isNear(player.getX(), player.getY(), 100)) {
-                String action = door.isOpen() ? "Close" : "Open";
-                drawPrompt(g2d, "Press 'O' to " + action + " Door", player.getX(), player.getY() - 60);
+                String promptText;
+                if (door.isLocked()) {
+                    int floorNum = controller.getCastle().getCurrentFloorNumber();
+                    boolean hasKey = player.getInventory().stream()
+                        .anyMatch(i -> i instanceof model.Key && ((model.Key)i).getFloorLevel() == floorNum);
+                    
+                    if (floorNum == 3) {
+                        boolean hasDiamond = player.getInventory().stream().anyMatch(i -> i instanceof model.Diamond);
+                        if (hasKey && hasDiamond) {
+                            promptText = "Press 'O' to Unlock Door";
+                        } else {
+                            promptText = "You have to obtain both the Key\nand the Diamond to open this door.";
+                        }
+                    } else {
+                        if (hasKey) {
+                            promptText = "Press 'O' to Unlock Door";
+                        } else {
+                            promptText = "You have to obtain the key\nin order to open the door.";
+                        }
+                    }
+                } else {
+                    String action = door.isOpen() ? "Close" : "Open";
+                    promptText = "Press 'O' to " + action + " Door";
+                }
+                
+                drawPrompt(g2d, promptText, player.getX(), player.getY() - 60);
                 break;
+            }
+        }
+
+        // Draw Boss Gate prompt
+        if (controller.getCastle().getCurrentFloorNumber() == 3 && !floor.canAccessBoss()) {
+            for (model.Room room : floor.getRooms()) {
+                if (room.getName().equals("Core Chamber")) {
+                    int bx = room.getX() + room.getWidth()/2;
+                    int by = room.getY() + room.getHeight()/2;
+                    double dist = Math.sqrt(Math.pow(player.getX() - bx, 2) + Math.pow(player.getY() - by, 2));
+                    if (dist < 300) {
+                        drawPrompt(g2d, "You have to defeat both Aliens\nbefore confronting the Dark Alien boss!", bx, by - 80);
+                    }
+                }
             }
         }
         
@@ -371,6 +411,45 @@ public class ScenePanel extends JPanel {
             g.fillOval(x, y + 20, 20, 10); // bottom
             g.setColor(new Color(0, 150, 255, 150));
             g.fillRect(x + 4, y + 8, 12, 14); // glow
+        } else if (pi.getItem() instanceof Key) {
+            // Glowing Access Key
+            long time = System.currentTimeMillis();
+            int pulse = (int) (Math.sin(time / 200.0) * 10) + 15;
+            
+            // Key Glow
+            float[] dist = {0.0f, 1.0f};
+            Color[] colors = {new Color(255, 215, 0, 100 + pulse), new Color(255, 215, 0, 0)};
+            java.awt.RadialGradientPaint glow = new java.awt.RadialGradientPaint(x + 10, y + 15, 30 + pulse/2, dist, colors);
+            g.setPaint(glow);
+            g.fillOval(x - 20, y - 15, 60, 60);
+
+            // Key Shape (Golden)
+            g.setColor(new Color(255, 215, 0));
+            g.fillOval(x, y, 15, 15); // head
+            g.fillRect(x + 12, y + 5, 15, 4); // shaft
+            g.fillRect(x + 22, y + 8, 4, 6);  // bit 1
+            g.fillRect(x + 17, y + 8, 4, 4);  // bit 2
+        } else if (pi.getItem() instanceof model.Diamond) {
+            // Glowing Energy Diamond
+            long time = System.currentTimeMillis();
+            int pulse = (int) (Math.sin(time / 150.0) * 15) + 20;
+            
+            // Diamond Glow
+            float[] dist = {0.0f, 1.0f};
+            Color[] colors = {new Color(0, 255, 255, 120 + pulse), new Color(0, 255, 255, 0)};
+            java.awt.RadialGradientPaint glow = new java.awt.RadialGradientPaint(x + 15, y + 15, 40 + pulse/2, dist, colors);
+            g.setPaint(glow);
+            g.fillOval(x - 25, y - 25, 80, 80);
+
+            // Diamond Shape (Cyan)
+            g.setColor(new Color(0, 255, 255));
+            int[] dx = {x + 15, x + 30, x + 15, x};
+            int[] dy = {y, y + 15, y + 30, y + 15};
+            g.fillPolygon(dx, dy, 4);
+            
+            // Sparkle
+            g.setColor(Color.WHITE);
+            g.fillRect(x + 13, y + 10, 4, 4);
         }
     }
 
@@ -411,16 +490,27 @@ public class ScenePanel extends JPanel {
 
     private void drawPrompt(Graphics2D g, String text, int x, int y) {
         g.setFont(new Font(Font.MONOSPACED, Font.BOLD, 14));
-        int textW = g.getFontMetrics().stringWidth(text);
+        String[] lines = text.split("\n");
+        int maxW = 0;
+        for (String line : lines) {
+            maxW = Math.max(maxW, g.getFontMetrics().stringWidth(line));
+        }
+        int lineH = g.getFontMetrics().getHeight();
+        int totalH = lineH * lines.length;
         
-        // Draw bubble
+        // Draw bubble centered above y
+        int bx = x - (maxW / 2) - 10;
+        int by = y - totalH - 10;
         g.setColor(new Color(0, 0, 0, 180));
-        g.fillRoundRect(x - (textW / 2) - 10, y - 20, textW + 20, 30, 10, 10);
+        g.fillRoundRect(bx, by, maxW + 20, totalH + 15, 10, 10);
         g.setColor(new Color(50, 180, 255));
-        g.drawRoundRect(x - (textW / 2) - 10, y - 20, textW + 20, 30, 10, 10);
+        g.drawRoundRect(bx, by, maxW + 20, totalH + 15, 10, 10);
         
-        // Draw text
+        // Draw text lines
         g.setColor(Color.WHITE);
-        g.drawString(text, x - (textW / 2), y);
+        for (int i = 0; i < lines.length; i++) {
+            int lineW = g.getFontMetrics().stringWidth(lines[i]);
+            g.drawString(lines[i], x - (lineW / 2), by + lineH * (i + 1));
+        }
     }
 }

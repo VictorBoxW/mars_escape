@@ -109,20 +109,33 @@ public class GamePanel extends JPanel {
 
     private void updateInventory() {
         Player player = controller.getPlayer();
-        int selectedIndex = inventoryBox.getSelectedIndex();
-
-        inventoryBox.removeAllItems();
         if (player == null) {
+            inventoryBox.removeAllItems();
             return;
         }
 
         List<Item> inventory = player.getInventory();
-        for (Item item : inventory) {
-            inventoryBox.addItem(item.getName());
+        
+        // Only update if the number of items or the items themselves changed
+        boolean needsUpdate = inventoryBox.getItemCount() != inventory.size();
+        if (!needsUpdate) {
+            for (int i = 0; i < inventory.size(); i++) {
+                if (!inventory.get(i).getName().equals(inventoryBox.getItemAt(i))) {
+                    needsUpdate = true;
+                    break;
+                }
+            }
         }
 
-        if (!inventory.isEmpty()) {
-            inventoryBox.setSelectedIndex(Math.max(0, Math.min(selectedIndex, inventory.size() - 1)));
+        if (needsUpdate) {
+            int selectedIndex = inventoryBox.getSelectedIndex();
+            inventoryBox.removeAllItems();
+            for (Item item : inventory) {
+                inventoryBox.addItem(item.getName());
+            }
+            if (!inventory.isEmpty()) {
+                inventoryBox.setSelectedIndex(Math.max(0, Math.min(selectedIndex, inventory.size() - 1)));
+            }
         }
     }
 

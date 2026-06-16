@@ -8,15 +8,35 @@ public class Door {
     private final int width;
     private final int height;
     private boolean open;
+    private boolean locked;
+    private boolean exitDoor;
     private double animProgress; // 0 = closed, 1 = open
 
     public Door(int x, int y, int width, int height) {
+        this(x, y, width, height, false, false);
+    }
+
+    public Door(int x, int y, int width, int height, boolean locked, boolean exitDoor) {
         this.x = x;
         this.y = y;
         this.width = width;
         this.height = height;
         this.open = false;
+        this.locked = locked;
+        this.exitDoor = exitDoor;
         this.animProgress = 0;
+    }
+
+    public boolean isLocked() {
+        return locked;
+    }
+
+    public void setLocked(boolean locked) {
+        this.locked = locked;
+    }
+
+    public boolean isExitDoor() {
+        return exitDoor;
     }
 
     public double getAnimProgress() {
