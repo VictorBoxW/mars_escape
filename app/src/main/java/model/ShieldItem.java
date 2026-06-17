@@ -1,6 +1,7 @@
 package model;
 
 public class ShieldItem extends Item {
+    private static final long serialVersionUID = 1L;
     private final int shieldAmount;
 
     public ShieldItem(String name, String description, int shieldAmount) {

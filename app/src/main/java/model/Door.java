@@ -2,7 +2,8 @@ package model;
 
 import java.awt.Rectangle;
 
-public class Door {
+public class Door implements java.io.Serializable {
+    private static final long serialVersionUID = 1L;
     private final int x;
     private final int y;
     private final int width;

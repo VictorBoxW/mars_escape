@@ -1,6 +1,7 @@
 package model;
 
-public abstract class Item implements Interactable {
+public abstract class Item implements Interactable, java.io.Serializable {
+    private static final long serialVersionUID = 1L;
     private final String name;
     private final String description;
 

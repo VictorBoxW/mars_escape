@@ -1,6 +1,7 @@
 package model;
 
 public class Consumable extends Item {
+    private static final long serialVersionUID = 1L;
     private final int healingAmount;
 
     public Consumable(String name, String description, int healingAmount) {

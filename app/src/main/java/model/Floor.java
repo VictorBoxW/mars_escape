@@ -5,7 +5,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class Floor {
+public class Floor implements java.io.Serializable {
+    private static final long serialVersionUID = 1L;
     private final String name;
     private final List<Room> rooms;
     private final List<Rectangle> walls;

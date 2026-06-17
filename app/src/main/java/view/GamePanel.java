@@ -16,7 +16,7 @@ import model.Item;
 import model.Player;
 import model.Room;
 
-public class GamePanel extends JPanel {
+public class GamePanel extends JPanel implements controller.GameView {
     private final GameController controller;
     private final ScenePanel scenePanel;
     private final JTextArea logArea;
@@ -26,6 +26,8 @@ public class GamePanel extends JPanel {
     private final JButton dodgeButton;
     private final JButton useItemButton;
     private final JButton restartButton;
+    private final JButton saveButton;
+    private final JButton loadButton;
 
     public GamePanel(GameController controller) {
         super(new BorderLayout(8, 8));
@@ -38,6 +40,8 @@ public class GamePanel extends JPanel {
         this.dodgeButton = new JButton("Dodge");
         this.useItemButton = new JButton("Use Item");
         this.restartButton = new JButton("Restart");
+        this.saveButton = new JButton("Save Game");
+        this.loadButton = new JButton("Load Game");
 
         setPreferredSize(new Dimension(1280, 720));
         setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
@@ -77,12 +81,16 @@ public class GamePanel extends JPanel {
         dodgeButton.addActionListener(event -> { controller.dodge(); requestFocusInWindow(); });
         useItemButton.addActionListener(event -> { controller.useItem(inventoryBox.getSelectedIndex()); requestFocusInWindow(); });
         restartButton.addActionListener(event -> { controller.restartGame(); requestFocusInWindow(); });
+        saveButton.addActionListener(event -> { saveGameAction(); requestFocusInWindow(); });
+        loadButton.addActionListener(event -> { loadGameAction(); requestFocusInWindow(); });
 
         // Make buttons non-focusable so they don't capture arrow key events
         attackButton.setFocusable(false);
         dodgeButton.setFocusable(false);
         useItemButton.setFocusable(false);
         restartButton.setFocusable(false);
+        saveButton.setFocusable(false);
+        loadButton.setFocusable(false);
         inventoryBox.setFocusable(false);
     }
 
@@ -95,6 +103,8 @@ public class GamePanel extends JPanel {
         actionPanel.add(inventoryBox);
         actionPanel.add(useItemButton);
         actionPanel.add(restartButton);
+        actionPanel.add(saveButton);
+        actionPanel.add(loadButton);
 
         southPanel.add(statusLabel, BorderLayout.NORTH);
         southPanel.add(actionPanel, BorderLayout.CENTER);
@@ -164,5 +174,48 @@ public class GamePanel extends JPanel {
         dodgeButton.setEnabled(alive && inCombat && !gameOver);
         useItemButton.setEnabled(alive && inventoryBox.getItemCount() > 0 && !gameOver);
         restartButton.setEnabled(true);
+        saveButton.setEnabled(alive && !gameOver);
+        loadButton.setEnabled(true);
+    }
+
+    @Override
+    public String getLogText() {
+        return logArea.getText();
+    }
+
+    @Override
+    public void showGameOverDialog(boolean victory) {
+        java.awt.Window window = javax.swing.SwingUtilities.getWindowAncestor(this);
+        if (window instanceof GameWindow) {
+            ((GameWindow) window).showGameOverDialog(victory);
+        }
+    }
+
+    private void saveGameAction() {
+        javax.swing.JFileChooser fileChooser = new javax.swing.JFileChooser();
+        fileChooser.setDialogTitle("Save Game Progress");
+        if (fileChooser.showSaveDialog(this) == javax.swing.JFileChooser.APPROVE_OPTION) {
+            java.io.File file = fileChooser.getSelectedFile();
+            try {
+                controller.saveGame(file.getAbsolutePath());
+                javax.swing.JOptionPane.showMessageDialog(this, "Game progress saved successfully!", "Success", javax.swing.JOptionPane.INFORMATION_MESSAGE);
+            } catch (Exception ex) {
+                javax.swing.JOptionPane.showMessageDialog(this, "Failed to save game: " + ex.getMessage(), "Error", javax.swing.JOptionPane.ERROR_MESSAGE);
+            }
+        }
+    }
+
+    private void loadGameAction() {
+        javax.swing.JFileChooser fileChooser = new javax.swing.JFileChooser();
+        fileChooser.setDialogTitle("Load Game Progress");
+        if (fileChooser.showOpenDialog(this) == javax.swing.JFileChooser.APPROVE_OPTION) {
+            java.io.File file = fileChooser.getSelectedFile();
+            try {
+                controller.loadGame(file.getAbsolutePath());
+                javax.swing.JOptionPane.showMessageDialog(this, "Game progress loaded successfully!", "Success", javax.swing.JOptionPane.INFORMATION_MESSAGE);
+            } catch (Exception ex) {
+                javax.swing.JOptionPane.showMessageDialog(this, "Failed to load game: " + ex.getMessage(), "Error", javax.swing.JOptionPane.ERROR_MESSAGE);
+            }
+        }
     }
 }

@@ -5,7 +5,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
-public class Room implements Interactable {
+public class Room implements Interactable, java.io.Serializable {
+    private static final long serialVersionUID = 1L;
     private final String name;
     private final String description;
     private final List<Enemy> enemies;

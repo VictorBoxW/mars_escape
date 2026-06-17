@@ -12,21 +12,21 @@ import model.Key;
 import model.Player;
 import model.Room;
 import model.ShieldItem;
-import view.GamePanel;
+import model.GameState;
 
 public class GameController {
     private final CombatSystem combatSystem;
     private Player player;
     private Castle castle;
     private Enemy currentEnemy;
-    private GamePanel gamePanel;
+    private GameView gamePanel;
     private boolean gameOver;
 
     public GameController() {
         this.combatSystem = new CombatSystem();
     }
 
-    public void setGamePanel(GamePanel gamePanel) {
+    public void setGamePanel(GameView gamePanel) {
         this.gamePanel = gamePanel;
     }
 
@@ -96,9 +96,8 @@ public class GameController {
                         gamePanel.appendLog("The astronaut takes the Energy Diamond and the fuel key.");
                         gamePanel.appendLog("Mission Success: The supplies are secured. It's time to fly home!");
                         gameOver = true;
-                        java.awt.Window window = javax.swing.SwingUtilities.getWindowAncestor(gamePanel);
-                        if (window instanceof view.GameWindow) {
-                            ((view.GameWindow) window).showGameOverDialog(true);
+                        if (gamePanel != null) {
+                            gamePanel.showGameOverDialog(true);
                         }
                     } else {
                         continueExploring(); // Advance to next floor
@@ -343,9 +342,8 @@ public class GameController {
         gamePanel.appendLog("Mission failed. The astronaut has fallen in the fortress.");
         
         // Notify UI of defeat
-        java.awt.Window window = javax.swing.SwingUtilities.getWindowAncestor(gamePanel);
-        if (window instanceof view.GameWindow) {
-            ((view.GameWindow) window).showGameOverDialog(false);
+        if (gamePanel != null) {
+            gamePanel.showGameOverDialog(false);
         }
     }
 
@@ -444,5 +442,26 @@ public class GameController {
         floors.add(f3);
 
         return new Castle(floors);
+    }
+
+    public void saveGame(String filepath) throws java.io.IOException {
+        persistence.PersistenceManager pm = new persistence.FilePersistenceManager();
+        String logText = (gamePanel != null) ? gamePanel.getLogText() : "";
+        GameState state = new GameState(player, castle, currentEnemy, gameOver, logText);
+        pm.save(state, filepath);
+    }
+
+    public void loadGame(String filepath) throws java.io.IOException, ClassNotFoundException {
+        persistence.PersistenceManager pm = new persistence.FilePersistenceManager();
+        GameState state = pm.load(filepath);
+        this.player = state.getPlayer();
+        this.castle = state.getCastle();
+        this.currentEnemy = state.getCurrentEnemy();
+        this.gameOver = state.isGameOver();
+        
+        if (gamePanel != null) {
+            gamePanel.setLog(state.getLogHistory());
+            gamePanel.refresh();
+        }
     }
 }

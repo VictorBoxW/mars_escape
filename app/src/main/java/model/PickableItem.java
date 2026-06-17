@@ -2,7 +2,8 @@ package model;
 
 import java.awt.Rectangle;
 
-public class PickableItem {
+public class PickableItem implements java.io.Serializable {
+    private static final long serialVersionUID = 1L;
     private final Item item;
     private final int x;
     private final int y;

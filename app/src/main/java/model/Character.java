@@ -1,6 +1,7 @@
 package model;
 
-public abstract class Character implements Fightable {
+public abstract class Character implements Fightable, java.io.Serializable {
+    private static final long serialVersionUID = 1L;
     private final String name;
     private final int maxHealth;
     private int health;

@@ -1,6 +1,7 @@
 package model;
 
 public class Key extends Item {
+    private static final long serialVersionUID = 1L;
     private final int floorLevel;
 
     public Key(int floorLevel) {

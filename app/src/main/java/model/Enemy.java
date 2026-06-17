@@ -1,6 +1,7 @@
 package model;
 
 public class Enemy extends Character {
+    private static final long serialVersionUID = 1L;
     private final String taunt;
     private final boolean isBoss;
 
