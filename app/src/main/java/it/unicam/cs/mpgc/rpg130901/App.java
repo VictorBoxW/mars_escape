@@ -1,4 +1,4 @@
-package org.example.app;
+package it.unicam.cs.mpgc.rpg130901;
 
 import javax.swing.SwingUtilities;
 import view.GameWindow;
