@@ -25,7 +25,6 @@ public class GamePanel extends JPanel {
     private final JButton attackButton;
     private final JButton dodgeButton;
     private final JButton useItemButton;
-    private final JButton continueButton;
     private final JButton restartButton;
 
     public GamePanel(GameController controller) {
@@ -38,7 +37,6 @@ public class GamePanel extends JPanel {
         this.attackButton = new JButton("Attack");
         this.dodgeButton = new JButton("Dodge");
         this.useItemButton = new JButton("Use Item");
-        this.continueButton = new JButton("Continue");
         this.restartButton = new JButton("Restart");
 
         setPreferredSize(new Dimension(1280, 720));
@@ -78,14 +76,12 @@ public class GamePanel extends JPanel {
         attackButton.addActionListener(event -> { controller.attack(); requestFocusInWindow(); });
         dodgeButton.addActionListener(event -> { controller.dodge(); requestFocusInWindow(); });
         useItemButton.addActionListener(event -> { controller.useItem(inventoryBox.getSelectedIndex()); requestFocusInWindow(); });
-        continueButton.addActionListener(event -> { controller.continueExploring(); requestFocusInWindow(); });
         restartButton.addActionListener(event -> { controller.restartGame(); requestFocusInWindow(); });
 
         // Make buttons non-focusable so they don't capture arrow key events
         attackButton.setFocusable(false);
         dodgeButton.setFocusable(false);
         useItemButton.setFocusable(false);
-        continueButton.setFocusable(false);
         restartButton.setFocusable(false);
         inventoryBox.setFocusable(false);
     }
@@ -98,7 +94,6 @@ public class GamePanel extends JPanel {
         actionPanel.add(dodgeButton);
         actionPanel.add(inventoryBox);
         actionPanel.add(useItemButton);
-        actionPanel.add(continueButton);
         actionPanel.add(restartButton);
 
         southPanel.add(statusLabel, BorderLayout.NORTH);
@@ -148,8 +143,6 @@ public class GamePanel extends JPanel {
 
         Floor floor = controller.getCastle().getCurrentFloor();
         Room room = floor == null ? null : floor.getCurrentRoom();
-        String weapon = player.getWeapon() == null ? "none" : player.getWeapon().getName();
-        String armor = player.getArmor() == null ? "none" : player.getArmor().getName();
         String location = room == null
                 ? "Mission complete"
                 : floor.getName() + " / " + room.getName();
@@ -158,8 +151,6 @@ public class GamePanel extends JPanel {
                 + " [Shield: " + player.getShield() + "]"
                 + " | ATK " + player.getAttackPower()
                 + " | DEF " + player.getDefensePower()
-                + " | Weapon: " + weapon
-                + " | Armor: " + armor
                 + " | " + location);
     }
 
@@ -172,7 +163,6 @@ public class GamePanel extends JPanel {
         attackButton.setEnabled(alive && inCombat && !gameOver);
         dodgeButton.setEnabled(alive && inCombat && !gameOver);
         useItemButton.setEnabled(alive && inventoryBox.getItemCount() > 0 && !gameOver);
-        continueButton.setEnabled(controller.canContinue());
         restartButton.setEnabled(true);
     }
 }

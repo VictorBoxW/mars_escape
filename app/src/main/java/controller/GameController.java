@@ -1,7 +1,6 @@
 package controller;
 
 import java.util.List;
-import model.Armor;
 import model.Castle;
 import model.Consumable;
 import model.Diamond;
@@ -13,7 +12,6 @@ import model.Key;
 import model.Player;
 import model.Room;
 import model.ShieldItem;
-import model.Weapon;
 import view.GamePanel;
 
 public class GameController {
@@ -137,27 +135,33 @@ public class GameController {
                         // Check for requirements
                         if (castle.getCurrentFloorNumber() == 3) {
                             // Floor 3 needs Key AND Diamond
-                            boolean hasKey = player.getInventory().stream()
-                                .anyMatch(i -> i instanceof Key && ((Key)i).getFloorLevel() == 3);
-                            boolean hasDiamond = player.getInventory().stream()
-                                .anyMatch(i -> i instanceof Diamond);
+                            Key key = (Key) player.getInventory().stream()
+                                .filter(i -> i instanceof Key && ((Key)i).getFloorLevel() == 3)
+                                .findFirst().orElse(null);
+                            Diamond diamond = (Diamond) player.getInventory().stream()
+                                .filter(i -> i instanceof Diamond)
+                                .findFirst().orElse(null);
 
-                            if (hasKey && hasDiamond) {
+                            if (key != null && diamond != null) {
                                 door.setLocked(false);
                                 door.setOpen(true);
-                                gamePanel.appendLog("System: Exit Door unlocked using the Diamond and Key!");
+                                player.removeItem(key);
+                                player.removeItem(diamond);
+                                gamePanel.appendLog("System: Exit Door unlocked using the Diamond and Key! Items consumed.");
                             } else {
                                 gamePanel.appendLog("System: You have to obtain both the Key and the Diamond to open this door.");
                             }
                         } else {
                             // Other floors just need Key
-                            boolean hasKey = player.getInventory().stream()
-                                .anyMatch(i -> i instanceof Key && ((Key)i).getFloorLevel() == castle.getCurrentFloorNumber());
+                            Key key = (Key) player.getInventory().stream()
+                                .filter(i -> i instanceof Key && ((Key)i).getFloorLevel() == castle.getCurrentFloorNumber())
+                                .findFirst().orElse(null);
                             
-                            if (hasKey) {
+                            if (key != null) {
                                 door.setLocked(false);
                                 door.setOpen(true);
-                                gamePanel.appendLog("System: Door unlocked using the Access Key!");
+                                player.removeItem(key);
+                                gamePanel.appendLog("System: Door unlocked using the Access Key! Key consumed.");
                             } else {
                                 gamePanel.appendLog("System: You have to obtain the key in order to open the door.");
                             }
@@ -218,11 +222,6 @@ public class GameController {
 
     public boolean isGameOver() {
         return gameOver;
-    }
-
-    public boolean canContinue() {
-        // Now advancement is through the exit door
-        return false;
     }
 
     private boolean canFight() {
@@ -341,15 +340,9 @@ public class GameController {
 
     private Player createPlayer() {
         Player player = new Player("Astronaut");
-        Weapon rifle = new Weapon("Plasma Rifle", "A high-powered military rifle.", 10);
-        Armor suit = new Armor("Pressure Suit", "Standard EVA protection.", 2);
 
-        player.addItem(rifle);
-        player.addItem(suit);
         player.addItem(new Consumable("Med Kit", "Restores 40 health.", 40));
         player.addItem(new ShieldItem("Shield Cell", "Provides +25 energy shield.", 25));
-        player.equipWeapon(rifle);
-        player.equipArmor(suit);
         player.setPosition(100, 100);
 
         return player;
@@ -387,9 +380,9 @@ public class GameController {
             new model.PickableItem(new ShieldItem("Shield Cell", "Provides +25 energy shield.", 25), 1300, 1540)
         );
         List<Room> rooms1 = List.of(
-            new Room("Outer Outpost", "Scout hiding.", List.of(new Enemy("Martian Scout", 35, 7, 3, "Krrr!")), List.of(), 100, 1000, 180, 180),
-            new Room("Warrior Den", "Warrior watch.", List.of(new Enemy("Martian Warrior", 45, 9, 4, "Halt!")), List.of(), 1000, 100, 180, 180),
-            new Room("Exit Gate", "Final guard.", List.of(new Enemy("Martian Elite", 55, 11, 5, "Die!")), List.of(), 2000, 2000, 180, 180)
+            new Room("Outer Outpost", "Scout hiding.", List.of(new Enemy("Martian Scout", 35, 7, 0, "Krrr!")), List.of(), 100, 1000, 180, 180),
+            new Room("Warrior Den", "Warrior watch.", List.of(new Enemy("Martian Warrior", 45, 9, 0, "Halt!")), List.of(), 1000, 100, 180, 180),
+            new Room("Exit Gate", "Final guard.", List.of(new Enemy("Martian Elite", 55, 11, 0, "Die!")), List.of(), 2000, 2000, 180, 180)
         );
         Floor f1 = new Floor("Lower Bastion", rooms1, commonWalls, items1, mapSize, mapSize);
         // Big brownish doors in maze gaps
@@ -406,9 +399,9 @@ public class GameController {
             new model.PickableItem(new ShieldItem("Shield Cell", "Provides +25 energy shield.", 25), 1300, 1540)
         );
         List<Room> rooms2 = List.of(
-            new Room("Research Lab", "Scientist.", List.of(new Enemy("Alien Scientist", 65, 13, 5, "Intrruption!")), List.of(), 100, 1000, 180, 180),
-            new Room("Data Vault", "Guardian.", List.of(new Enemy("Alien Guardian", 75, 15, 6, "Aagh!")), List.of(), 1000, 100, 180, 180),
-            new Room("Lab Command", "Master.", List.of(new Enemy("Alien Master", 85, 17, 7, "Stronger!")), List.of(), 2000, 2000, 180, 180)
+            new Room("Research Lab", "Scientist.", List.of(new Enemy("Alien Scientist", 65, 13, 0, "Intrruption!")), List.of(), 100, 1000, 180, 180),
+            new Room("Data Vault", "Guardian.", List.of(new Enemy("Alien Guardian", 75, 15, 0, "Aagh!")), List.of(), 1000, 100, 180, 180),
+            new Room("Lab Command", "Master.", List.of(new Enemy("Alien Master", 85, 17, 0, "Stronger!")), List.of(), 2000, 2000, 180, 180)
         );
         Floor f2 = new Floor("Research Wing", rooms2, commonWalls, items2, mapSize, mapSize);
         f2.addDoor(new Door(40, 1800, 360, 40));
@@ -424,9 +417,9 @@ public class GameController {
             new model.PickableItem(new ShieldItem("Shield Cell", "Provides +25 energy shield.", 25), 1300, 1540)
         );
         List<Room> rooms3 = List.of(
-            new Room("Great Hall", "Royal Guard.", List.of(new Enemy("Royal Guard", 100, 20, 8, "Intruder!")), List.of(), 100, 1000, 180, 180),
-            new Room("Sanctum", "Sentinel.", List.of(new Enemy("Elite Sentinel", 110, 22, 9, "Stop!")), List.of(), 1000, 100, 180, 180),
-            new Room("Core Chamber", "Dark Alien.", List.of(new Enemy("Dark Alien", 300, 35, 18, "THE CRYSTAL IS MINE!", true)), List.of(), 2000, 2000, 300, 300)
+            new Room("Great Hall", "Royal Guard.", List.of(new Enemy("Royal Guard", 100, 20, 0, "Intruder!")), List.of(), 100, 1000, 180, 180),
+            new Room("Sanctum", "Sentinel.", List.of(new Enemy("Elite Sentinel", 110, 22, 0, "Stop!")), List.of(), 1000, 100, 180, 180),
+            new Room("Core Chamber", "Dark Alien.", List.of(new Enemy("Dark Alien", 300, 35, 0, "THE CRYSTAL IS MINE!", true)), List.of(), 2000, 2000, 300, 300)
         );
         Floor f3 = new Floor("Throne Floor", rooms3, commonWalls, items3, mapSize, mapSize);
         f3.addDoor(new Door(40, 1800, 360, 40));

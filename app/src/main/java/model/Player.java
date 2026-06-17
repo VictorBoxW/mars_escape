@@ -6,8 +6,6 @@ import java.util.List;
 
 public class Player extends Character {
     private final List<Item> inventory;
-    private Weapon equippedWeapon;
-    private Armor equippedArmor;
     private boolean hasEnergyCrystal;
     private int x;
     private int y;
@@ -15,7 +13,7 @@ public class Player extends Character {
     private double walkPhase;
 
     public Player(String name) {
-        super(name, 100, 8, 2);
+        super(name, 100, 12, 4);
         this.inventory = new ArrayList<>();
         this.x = 440; // Center
         this.y = 550; // Near bottom
@@ -81,34 +79,6 @@ public class Player extends Character {
 
         Item item = inventory.get(itemIndex);
         return item.interact(this);
-    }
-
-    public void equipWeapon(Weapon weapon) {
-        this.equippedWeapon = weapon;
-    }
-
-    public void equipArmor(Armor armor) {
-        this.equippedArmor = armor;
-    }
-
-    public Weapon getWeapon() {
-        return equippedWeapon;
-    }
-
-    public Armor getArmor() {
-        return equippedArmor;
-    }
-
-    @Override
-    public int getAttackPower() {
-        int bonus = equippedWeapon == null ? 0 : equippedWeapon.getAttackBonus();
-        return super.getAttackPower() + bonus;
-    }
-
-    @Override
-    public int getDefensePower() {
-        int bonus = equippedArmor == null ? 0 : equippedArmor.getDefenseBonus();
-        return super.getDefensePower() + bonus;
     }
 
     public void obtainEnergyCrystal() {
