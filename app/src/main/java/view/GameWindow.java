@@ -101,7 +101,19 @@ public class GameWindow extends JFrame {
     private void setupMovementTimer() {
         int moveAmount = 8; // Slowed down from 12 for better control
         movementTimer = new javax.swing.Timer(20, e -> {
-            controller.update();
+            // Only update door animations + repaint when player is moving
+            // or doors are mid-animation.  This avoids 50fps full repaints
+            // when the player is idle, which was the main GPU-usage cause
+            // on high-resolution displays.
+            boolean needsUpdate = !pressedKeys.isEmpty();
+            if (!needsUpdate) {
+                // Still update if doors are animating
+                needsUpdate = controller.hasPendingAnimations();
+            }
+            if (needsUpdate) {
+                controller.update();
+            }
+
             if (pressedKeys.isEmpty()) return;
 
             int dx = 0;

@@ -124,6 +124,21 @@ public class GameController {
         }
     }
 
+    /**
+     * Returns true if any door is currently mid-animation
+     * (i.e. its visual state hasn't caught up with its logical state).
+     * Used by the timer to avoid full repaints when everything is idle.
+     */
+    public boolean hasPendingAnimations() {
+        Floor currentFloor = castle.getCurrentFloor();
+        if (currentFloor == null) return false;
+        for (Door door : currentFloor.getDoors()) {
+            double progress = door.getAnimProgress();
+            if (door.isOpen() && progress < 1.0) return true;
+            if (!door.isOpen() && progress > 0.0) return true;
+        }
+        return false;
+    }
     public void interact() {
         if (gameOver || currentEnemy != null) return;
 

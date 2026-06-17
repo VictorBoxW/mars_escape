@@ -5,13 +5,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="97ecc1ba-2f7a-4c13-9fb7-22901b6a28ee" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/gradle.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/gradle.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/java/controller/GameController.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/controller/GameController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/model/Door.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/model/Door.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/model/Floor.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/model/Floor.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/model/Player.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/model/Player.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/view/GamePanel.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/view/GamePanel.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/view/GameWindow.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/view/GameWindow.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/java/view/ScenePanel.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/view/ScenePanel.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -153,6 +149,8 @@
       <workItem from="1781361459705" duration="2788000" />
       <workItem from="1781599921248" duration="2590000" />
       <workItem from="1781640931907" duration="5265000" />
+      <workItem from="1781711909801" duration="905000" />
+      <workItem from="1781724395933" duration="340000" />
     </task>
     <servers />
   </component>

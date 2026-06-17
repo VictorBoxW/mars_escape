@@ -21,6 +21,10 @@ public class ScenePanel extends JPanel {
     private final GameController controller;
     private final Random random = new Random(42);
 
+    // Design resolution — all combat-scene coordinates are authored against this size
+    private static final double BASE_WIDTH = 880.0;
+    private static final double BASE_HEIGHT = 600.0;
+
     public ScenePanel(GameController controller) {
         this.controller = controller;
         setPreferredSize(new Dimension(880, 600)); 
@@ -51,9 +55,11 @@ public class ScenePanel extends JPanel {
         int camX = Math.max(0, Math.min(player.getX() - w / 2, floor.getWidth() - w));
         int camY = Math.max(0, Math.min(player.getY() - h / 2, floor.getHeight() - h));
 
+        // Clip to visible viewport to avoid painting off-screen content
+        g2d.setClip(0, 0, w, h);
         g2d.translate(-camX, -camY);
 
-        drawBackground(g2d, floor);
+        drawBackground(g2d, floor, camX, camY, w, h);
         
         for (model.Room room : floor.getRooms()) {
             drawRoom(g2d, room);
@@ -118,19 +124,25 @@ public class ScenePanel extends JPanel {
             }
         }
         
-        drawFogOfWar(g2d, player.getX(), player.getY(), floor.getWidth(), floor.getHeight());
+        drawFogOfWar(g2d, player.getX(), player.getY(), camX, camY, w, h);
 
-        g2d.translate(camX, camY); 
+        g2d.translate(camX, camY);
+        g2d.setClip(null);
         drawLocation(g2d, controller.getCastle());
     }
 
-    private void drawFogOfWar(Graphics2D g2d, int px, int py, int fw, int fh) {
+    /**
+     * Draw fog of war clipped to the visible viewport only (not the entire floor).
+     * This is the key GPU optimisation — previously we filled a 2400×2400 rect
+     * with a RadialGradientPaint every frame; now we only fill the viewport.
+     */
+    private void drawFogOfWar(Graphics2D g2d, int px, int py, int camX, int camY, int vpW, int vpH) {
         int visionRadius = 350;
         
-        // Create a mask for the fog
-        java.awt.geom.Area fog = new java.awt.geom.Area(new java.awt.Rectangle(0, 0, fw, fh));
+        // Only fill the visible viewport rectangle (camX..camX+vpW, camY..camY+vpH)
+        // instead of the entire floor (0..floorWidth, 0..floorHeight)
+        java.awt.Rectangle viewport = new java.awt.Rectangle(camX, camY, vpW, vpH);
         
-        // We use a radial gradient to create a smooth transition
         float[] dist = {0.0f, 0.7f, 1.0f};
         Color[] colors = {new Color(0, 0, 0, 0), new Color(0, 0, 0, 150), new Color(0, 0, 0, 255)};
         
@@ -138,21 +150,49 @@ public class ScenePanel extends JPanel {
             px, py, visionRadius, dist, colors);
         
         g2d.setPaint(p);
-        g2d.fill(fog);
+        g2d.fill(viewport);
     }
 
+    /**
+     * Draw the combat scene scaled to the current panel size.
+     * All coordinates are authored for BASE_WIDTH×BASE_HEIGHT (880×600)
+     * and then uniformly scaled up so they look the same on any resolution.
+     */
     private void drawCombatScene(Graphics2D g2d, Enemy enemy) {
-        drawBackground(g2d, null);
+        int w = getWidth();
+        int h = getHeight();
+
+        // Compute uniform scale factor to fit the design into the current panel
+        double scaleX = w / BASE_WIDTH;
+        double scaleY = h / BASE_HEIGHT;
+        double scale = Math.min(scaleX, scaleY);
+
+        // Center the scaled content if aspect ratios differ
+        double offsetX = (w - BASE_WIDTH * scale) / 2.0;
+        double offsetY = (h - BASE_HEIGHT * scale) / 2.0;
+
+        // Draw the background at full panel size (no scaling needed for bg)
+        drawBackground(g2d, null, 0, 0, w, h);
+
+        // Apply the scaling transform for all combat-scene content
+        java.awt.geom.AffineTransform savedTransform = g2d.getTransform();
+        g2d.translate(offsetX, offsetY);
+        g2d.scale(scale, scale);
+
         drawLocation(g2d, controller.getCastle());
         Player player = controller.getPlayer();
 
-        int centerX = getWidth() / 2;
-        int centerY = getHeight() / 2;
+        // These coordinates are now in the 880×600 design space
+        int centerX = (int) (BASE_WIDTH / 2);
+        int centerY = (int) (BASE_HEIGHT / 2);
 
         if (player != null) {
             drawCharacter(g2d, centerX - 290, centerY + 50, true, "Astronaut", player.getHealth(), player.getMaxHealth(), player.getShield(), false);
         }
         drawCharacter(g2d, centerX + 210, centerY + 50, false, "Enemy", enemy.getHealth(), enemy.getMaxHealth(), enemy.getShield(), enemy.isBoss());
+
+        // Restore the original transform
+        g2d.setTransform(savedTransform);
     }
 
     private void drawRoom(Graphics2D g2d, model.Room room) {
@@ -235,27 +275,41 @@ public class ScenePanel extends JPanel {
         g2d.fillOval(x + 5, y - 22, 15, 22);  // Right eye
     }
 
-    private void drawBackground(Graphics2D g2d, Floor floor) {
+    /**
+     * Draw the background grid and walls.
+     * Now accepts viewport bounds so we only draw grid cells visible on screen.
+     */
+    private void drawBackground(Graphics2D g2d, Floor floor, int vpX, int vpY, int vpW, int vpH) {
         int w = floor != null ? floor.getWidth() : getWidth();
         int h = floor != null ? floor.getHeight() : getHeight();
 
         g2d.setColor(new Color(20, 20, 25));
-        g2d.fillRect(0, 0, w, h);
+        g2d.fillRect(vpX, vpY, vpW, vpH);
+        
+        // Only draw grid cells that overlap the viewport
+        int gridStartX = Math.max(0, (vpX / 100) * 100);
+        int gridStartY = Math.max(0, (vpY / 100) * 100);
+        int gridEndX = Math.min(w, vpX + vpW + 100);
+        int gridEndY = Math.min(h, vpY + vpH + 100);
         
         g2d.setColor(new Color(30, 30, 40));
-        for (int i = 0; i < w; i += 100) {
-            for (int j = 0; j < h; j += 100) {
+        for (int i = gridStartX; i < gridEndX; i += 100) {
+            for (int j = gridStartY; j < gridEndY; j += 100) {
                 g2d.drawRect(i, j, 100, 100);
             }
         }
 
         if (floor != null) {
+            java.awt.Rectangle vpRect = new java.awt.Rectangle(vpX, vpY, vpW, vpH);
             g2d.setColor(new Color(60, 60, 80));
             for (java.awt.Rectangle wall : floor.getWalls()) {
-                g2d.fillRect(wall.x, wall.y, wall.width, wall.height);
-                g2d.setColor(new Color(80, 80, 100));
-                g2d.drawRect(wall.x, wall.y, wall.width, wall.height);
-                g2d.setColor(new Color(60, 60, 80));
+                // Only draw walls that overlap the viewport
+                if (wall.intersects(vpRect)) {
+                    g2d.fillRect(wall.x, wall.y, wall.width, wall.height);
+                    g2d.setColor(new Color(80, 80, 100));
+                    g2d.drawRect(wall.x, wall.y, wall.width, wall.height);
+                    g2d.setColor(new Color(60, 60, 80));
+                }
             }
         }
 
@@ -266,12 +320,15 @@ public class ScenePanel extends JPanel {
                     if (i > 1240 && j < 1100) continue;
                     // Skip torch overlapping with Med Kit door
                     if (i == 200 && j == 1800) continue;
-                    drawTorch(g2d, i, j);
+                    // Only draw torches near the viewport (glow radius ~60px)
+                    if (i >= vpX - 80 && i <= vpX + vpW + 80 && j >= vpY - 80 && j <= vpY + vpH + 80) {
+                        drawTorch(g2d, i, j);
+                    }
                 }
             }
         } else {
             drawTorch(g2d, 100, 100);
-            drawTorch(g2d, getWidth() - 100, 100);
+            drawTorch(g2d, (int) BASE_WIDTH - 100, 100);
         }
     }
 
