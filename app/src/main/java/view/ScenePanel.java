@@ -1,6 +1,7 @@
 package view;
 
 import controller.GameController;
+
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
@@ -9,6 +10,7 @@ import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.util.Random;
 import javax.swing.JPanel;
+
 import model.Castle;
 import model.Diamond;
 import model.Enemy;
@@ -27,7 +29,7 @@ public class ScenePanel extends JPanel {
 
     public ScenePanel(GameController controller) {
         this.controller = controller;
-        setPreferredSize(new Dimension(880, 600)); 
+        setPreferredSize(new Dimension(880, 600));
         setBackground(new Color(10, 10, 15));
     }
 
@@ -60,7 +62,7 @@ public class ScenePanel extends JPanel {
         g2d.translate(-camX, -camY);
 
         drawBackground(g2d, floor, camX, camY, w, h);
-        
+
         for (model.Room room : floor.getRooms()) {
             drawRoom(g2d, room);
         }
@@ -76,7 +78,7 @@ public class ScenePanel extends JPanel {
         }
 
         drawTopDownAstronaut(g2d, player.getX(), player.getY(), player.getRotation(), player.getWalkPhase());
-        
+
         // Draw interaction prompt
         for (model.Door door : floor.getDoors()) {
             if (door.isNear(player.getX(), player.getY(), 100)) {
@@ -84,8 +86,8 @@ public class ScenePanel extends JPanel {
                 if (door.isLocked()) {
                     int floorNum = controller.getCastle().getCurrentFloorNumber();
                     boolean hasKey = player.getInventory().stream()
-                        .anyMatch(i -> i instanceof model.Key && ((model.Key)i).getFloorLevel() == floorNum);
-                    
+                            .anyMatch(i -> i instanceof model.Key && ((model.Key) i).getFloorLevel() == floorNum);
+
                     if (floorNum == 3) {
                         boolean hasDiamond = player.getInventory().stream().anyMatch(i -> i instanceof model.Diamond);
                         if (hasKey && hasDiamond) {
@@ -104,7 +106,7 @@ public class ScenePanel extends JPanel {
                     String action = door.isOpen() ? "Close" : "Open";
                     promptText = "Press 'O' to " + action + " Door";
                 }
-                
+
                 drawPrompt(g2d, promptText, player.getX(), player.getY() - 60);
                 break;
             }
@@ -114,8 +116,8 @@ public class ScenePanel extends JPanel {
         if (controller.getCastle().getCurrentFloorNumber() == 3 && !floor.canAccessBoss()) {
             for (model.Room room : floor.getRooms()) {
                 if (room.getName().equals("Core Chamber")) {
-                    int bx = room.getX() + room.getWidth()/2;
-                    int by = room.getY() + room.getHeight()/2;
+                    int bx = room.getX() + room.getWidth() / 2;
+                    int by = room.getY() + room.getHeight() / 2;
                     double dist = Math.sqrt(Math.pow(player.getX() - bx, 2) + Math.pow(player.getY() - by, 2));
                     if (dist < 300) {
                         drawPrompt(g2d, "You have to defeat both Aliens\nbefore confronting the Dark Alien boss!", bx, by - 80);
@@ -123,7 +125,7 @@ public class ScenePanel extends JPanel {
                 }
             }
         }
-        
+
         drawFogOfWar(g2d, player.getX(), player.getY(), camX, camY, w, h);
 
         g2d.translate(camX, camY);
@@ -138,17 +140,17 @@ public class ScenePanel extends JPanel {
      */
     private void drawFogOfWar(Graphics2D g2d, int px, int py, int camX, int camY, int vpW, int vpH) {
         int visionRadius = 350;
-        
+
         // Only fill the visible viewport rectangle (camX..camX+vpW, camY..camY+vpH)
         // instead of the entire floor (0..floorWidth, 0..floorHeight)
         java.awt.Rectangle viewport = new java.awt.Rectangle(camX, camY, vpW, vpH);
-        
+
         float[] dist = {0.0f, 0.7f, 1.0f};
         Color[] colors = {new Color(0, 0, 0, 0), new Color(0, 0, 0, 150), new Color(0, 0, 0, 255)};
-        
+
         java.awt.RadialGradientPaint p = new java.awt.RadialGradientPaint(
-            px, py, visionRadius, dist, colors);
-        
+                px, py, visionRadius, dist, colors);
+
         g2d.setPaint(p);
         g2d.fill(viewport);
     }
@@ -199,7 +201,7 @@ public class ScenePanel extends JPanel {
         if (!room.isCleared()) {
             // Boxes and names removed as requested
             boolean isBoss = room.getName().equals("Core Chamber");
-            drawTopDownAlien(g2d, room.getX() + room.getWidth()/2, room.getY() + room.getHeight()/2, isBoss);
+            drawTopDownAlien(g2d, room.getX() + room.getWidth() / 2, room.getY() + room.getHeight() / 2, isBoss);
         }
     }
 
@@ -212,7 +214,7 @@ public class ScenePanel extends JPanel {
         g2d.setColor(new Color(40, 40, 40));
         g2d.fillRect(-18, 10 + footOffset, 12, 15); // Left boot
         g2d.fillRect(6, 10 - footOffset, 12, 15);  // Right boot
-        
+
         g2d.setColor(Color.WHITE);
         g2d.fillRect(-15, 0 + footOffset, 6, 12); // Left leg
         g2d.fillRect(9, 0 - footOffset, 6, 12);   // Right leg
@@ -225,14 +227,14 @@ public class ScenePanel extends JPanel {
         // Backpack/Body (White suit)
         g2d.setColor(new Color(220, 220, 220));
         g2d.fillRoundRect(-22, -10, 44, 28, 8, 8);
-        
+
         // Suit Body
         g2d.setColor(Color.WHITE);
         g2d.fillOval(-20, -15, 40, 35);
-        
+
         // Helmet (White circle)
         g2d.fillOval(-16, -28, 32, 32);
-        
+
         // Visor (Glowing blue visor)
         g2d.setColor(new Color(100, 220, 255));
         g2d.fillRoundRect(-12, -24, 24, 12, 6, 6);
@@ -261,15 +263,15 @@ public class ScenePanel extends JPanel {
             g2d.setColor(new Color(45, 150, 45));
         }
         g2d.fillOval(x - 20, y - 5, 40, 30);
-        
+
         // Large Alien Head (Combat style)
         if (isBoss) {
             g2d.setColor(new Color(30, 30, 30));
         } else {
             g2d.setColor(new Color(60, 190, 60));
         }
-        g2d.fillOval(x - 28, y - 35, 56, 45); 
-        
+        g2d.fillOval(x - 28, y - 35, 56, 45);
+
         // Almond Eyes (Combat style)
         if (isBoss) {
             g2d.setColor(new Color(255, 0, 0));
@@ -290,13 +292,13 @@ public class ScenePanel extends JPanel {
 
         g2d.setColor(new Color(20, 20, 25));
         g2d.fillRect(vpX, vpY, vpW, vpH);
-        
+
         // Only draw grid cells that overlap the viewport
         int gridStartX = Math.max(0, (vpX / 100) * 100);
         int gridStartY = Math.max(0, (vpY / 100) * 100);
         int gridEndX = Math.min(w, vpX + vpW + 100);
         int gridEndY = Math.min(h, vpY + vpH + 100);
-        
+
         g2d.setColor(new Color(30, 30, 40));
         for (int i = gridStartX; i < gridEndX; i += 100) {
             for (int j = gridStartY; j < gridEndY; j += 100) {
@@ -333,33 +335,35 @@ public class ScenePanel extends JPanel {
             }
         } else {
             drawTorch(g2d, 100, 100);
-            drawTorch(g2d, (int) BASE_WIDTH - 100, 100);
+            drawTorch(g2d, w / 2, 100);
+            drawTorch(g2d, w - 100, 100);
+            ;
         }
     }
 
     private void drawTorch(Graphics2D g, int x, int y) {
         g.setColor(new Color(70, 45, 30));
         g.fillRect(x - 4, y, 8, 35);
-        
+
         float[] dist = {0.0f, 1.0f};
         Color[] colors = {new Color(255, 160, 0, 120), new Color(255, 80, 0, 0)};
         java.awt.RadialGradientPaint glow = new java.awt.RadialGradientPaint(x, y, 60, dist, colors);
         g.setPaint(glow);
         g.fillOval(x - 60, y - 60, 120, 120);
-        
+
         g.setColor(new Color(255, 220, 80));
         g.fillOval(x - 6, y - 12, 12, 18);
     }
 
     private void drawLocation(Graphics2D g2d, Castle castle) {
         g2d.setFont(new Font(Font.MONOSPACED, Font.BOLD, 20));
-        g2d.setColor(new Color(50, 180, 255)); 
+        g2d.setColor(new Color(50, 180, 255));
         g2d.drawString("DARK ALIEN FORTRESS", 25, 35);
 
         if (castle == null) return;
 
         Floor floor = castle.getCurrentFloor();
-        
+
         String levelInfo = "FLOOR LEVEL: " + castle.getCurrentFloorNumber() + " / " + castle.getFloorCount();
         // Room name removed as requested
         String floorName = (floor == null) ? "CORE SECURED" : floor.getName().toUpperCase();
@@ -385,7 +389,7 @@ public class ScenePanel extends JPanel {
         if (shield > 0) {
             g.setColor(new Color(40, 40, 40));
             g.fillRect(x - 20, barY - 12, 120, 8);
-            int shieldWidth = Math.min(120, shield * 2); 
+            int shieldWidth = Math.min(120, shield * 2);
             g.setColor(new Color(0, 160, 255));
             g.fillRect(x - 20, barY - 12, shieldWidth, 8);
             g.setColor(Color.WHITE);
@@ -407,15 +411,15 @@ public class ScenePanel extends JPanel {
 
     private void drawAstronaut(Graphics2D g, int x, int y) {
         g.setColor(Color.WHITE);
-        g.fillRoundRect(x, y - 75, 50, 75, 12, 12); 
-        g.fillOval(x + 5, y - 105, 40, 40); 
+        g.fillRoundRect(x, y - 75, 50, 75, 12, 12);
+        g.fillOval(x + 5, y - 105, 40, 40);
         g.setColor(new Color(100, 220, 255));
-        g.fillRoundRect(x + 12, y - 98, 30, 20, 10, 10); 
+        g.fillRoundRect(x + 12, y - 98, 30, 20, 10, 10);
         g.setColor(Color.WHITE);
-        g.fillRect(x + 8, y, 14, 18); 
+        g.fillRect(x + 8, y, 14, 18);
         g.fillRect(x + 28, y, 14, 18);
         g.setColor(new Color(40, 40, 40));
-        g.fillRect(x + 5, y + 15, 20, 6); 
+        g.fillRect(x + 5, y + 15, 20, 6);
         g.fillRect(x + 25, y + 15, 20, 6);
     }
 
@@ -425,15 +429,15 @@ public class ScenePanel extends JPanel {
         } else {
             g.setColor(new Color(60, 190, 60));
         }
-        g.fillOval(x, y - 70, 50, 75); 
-        g.fillOval(x - 5, y - 100, 60, 45); 
-        
+        g.fillOval(x, y - 70, 50, 75);
+        g.fillOval(x - 5, y - 100, 60, 45);
+
         if (isBoss) {
-            g.setColor(new Color(255, 0, 0)); 
+            g.setColor(new Color(255, 0, 0));
         } else {
             g.setColor(Color.BLACK);
         }
-        g.fillOval(x + 8, y - 88, 16, 22); 
+        g.fillOval(x + 8, y - 88, 16, 22);
         g.fillOval(x + 36, y - 88, 16, 22);
     }
 
@@ -477,11 +481,11 @@ public class ScenePanel extends JPanel {
             // Glowing Access Key
             long time = System.currentTimeMillis();
             int pulse = (int) (Math.sin(time / 200.0) * 10) + 15;
-            
+
             // Key Glow
             float[] dist = {0.0f, 1.0f};
             Color[] colors = {new Color(255, 215, 0, 100 + pulse), new Color(255, 215, 0, 0)};
-            java.awt.RadialGradientPaint glow = new java.awt.RadialGradientPaint(x + 10, y + 15, 30 + pulse/2, dist, colors);
+            java.awt.RadialGradientPaint glow = new java.awt.RadialGradientPaint(x + 10, y + 15, 30 + pulse / 2, dist, colors);
             g.setPaint(glow);
             g.fillOval(x - 20, y - 15, 60, 60);
 
@@ -495,11 +499,11 @@ public class ScenePanel extends JPanel {
             // Glowing Energy Diamond
             long time = System.currentTimeMillis();
             int pulse = (int) (Math.sin(time / 150.0) * 15) + 20;
-            
+
             // Diamond Glow
             float[] dist = {0.0f, 1.0f};
             Color[] colors = {new Color(0, 255, 255, 120 + pulse), new Color(0, 255, 255, 0)};
-            java.awt.RadialGradientPaint glow = new java.awt.RadialGradientPaint(x + 15, y + 15, 40 + pulse/2, dist, colors);
+            java.awt.RadialGradientPaint glow = new java.awt.RadialGradientPaint(x + 15, y + 15, 40 + pulse / 2, dist, colors);
             g.setPaint(glow);
             g.fillOval(x - 25, y - 25, 80, 80);
 
@@ -508,7 +512,7 @@ public class ScenePanel extends JPanel {
             int[] dx = {x + 15, x + 30, x + 15, x};
             int[] dy = {y, y + 15, y + 30, y + 15};
             g.fillPolygon(dx, dy, 4);
-            
+
             // Sparkle
             g.setColor(Color.WHITE);
             g.fillRect(x + 13, y + 10, 4, 4);
@@ -527,13 +531,13 @@ public class ScenePanel extends JPanel {
         int slideOffset = (int) (panelW * progress);
 
         g.setColor(new Color(101, 67, 33)); // Dark Brown
-        
+
         // Left Panel
         g.fillRect(x - slideOffset, y, panelW, h);
         g.setColor(new Color(60, 40, 20));
         g.drawRect(x - slideOffset, y, panelW, h);
         g.drawRect(x - slideOffset + 5, y + 5, panelW - 10, h - 10);
-        
+
         // Right Panel
         g.setColor(new Color(101, 67, 33));
         g.fillRect(x + panelW + slideOffset, y, panelW, h);
@@ -559,7 +563,7 @@ public class ScenePanel extends JPanel {
         }
         int lineH = g.getFontMetrics().getHeight();
         int totalH = lineH * lines.length;
-        
+
         // Draw bubble centered above y
         int bx = x - (maxW / 2) - 10;
         int by = y - totalH - 10;
@@ -567,7 +571,7 @@ public class ScenePanel extends JPanel {
         g.fillRoundRect(bx, by, maxW + 20, totalH + 15, 10, 10);
         g.setColor(new Color(50, 180, 255));
         g.drawRoundRect(bx, by, maxW + 20, totalH + 15, 10, 10);
-        
+
         // Draw text lines
         g.setColor(Color.WHITE);
         for (int i = 0; i < lines.length; i++) {

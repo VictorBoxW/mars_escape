@@ -6,6 +6,7 @@
   <component name="ChangeListManager">
     <list default="true" id="97ecc1ba-2f7a-4c13-9fb7-22901b6a28ee" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/view/ScenePanel.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/view/ScenePanel.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -259,12 +260,23 @@
       <workItem from="1781711909801" duration="905000" />
       <workItem from="1781724395933" duration="340000" />
       <workItem from="1781774850540" duration="1123000" />
-      <workItem from="1781817117217" duration="853000" />
+      <workItem from="1781817117217" duration="1987000" />
     </task>
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
