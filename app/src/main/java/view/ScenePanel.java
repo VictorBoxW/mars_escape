@@ -217,6 +217,11 @@ public class ScenePanel extends JPanel {
         g2d.fillRect(-15, 0 + footOffset, 6, 12); // Left leg
         g2d.fillRect(9, 0 - footOffset, 6, 12);   // Right leg
 
+        // Arms (swing opposite the same-side leg for a natural walking motion)
+        int armOffset = (int) (Math.sin(walkPhase) * 8);
+        g2d.fillRect(-28, -5 - armOffset, 8, 20); // Left arm
+        g2d.fillRect(20, -5 + armOffset, 8, 20);  // Right arm
+
         // Backpack/Body (White suit)
         g2d.setColor(new Color(220, 220, 220));
         g2d.fillRoundRect(-22, -10, 44, 28, 8, 8);
