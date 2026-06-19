@@ -41,12 +41,12 @@ class PersistenceTest {
 
         List<Rectangle> walls = List.of(new Rectangle(0, 0, 100, 10));
         List<Room> rooms = List.of(new Room("Test Room", "A test chamber", 
-            List.of(new Enemy("Martian Scout", 30, 5, 2, "Taunt")), 
+            List.of(new Enemy("Martian Scout", 30, 5,  "Taunt")),
             List.of(), 50, 50, 100, 100));
         Floor floor = new Floor("Test Floor", rooms, walls, new ArrayList<>(), 1000, 1000);
         
         Castle castle = new Castle(List.of(floor));
-        Enemy activeEnemy = new Enemy("Martian Boss", 100, 15, 5, "Fear me!", true);
+        Enemy activeEnemy = new Enemy("Martian Boss", 100, 15, "Fear me!", true);
         String logHistory = "Mars Escape\nInitial Log\nEvent occurred.";
 
         GameState originalState = new GameState(player, castle, activeEnemy, false, logHistory);

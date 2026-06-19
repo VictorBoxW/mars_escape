@@ -19,7 +19,7 @@ class CombatSystemTest {
         // but we can pass a mocked or seeded Random for specific dodge scenarios.
         combatSystem = new CombatSystem(new Random(42)); // Seeded for determinism
         player = new Player("Hero"); // HP: 100, ATK: 12, DEF: 4
-        enemy = new Enemy("Alien", 30, 10, 2, "I will eat you!"); // HP: 30, ATK: 10, DEF: 2
+        enemy = new Enemy("Alien", 30, 10,  "I will eat you!"); // HP: 30, ATK: 10
     }
 
     @Test
