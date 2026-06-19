@@ -6,7 +6,8 @@
   <component name="ChangeListManager">
     <list default="true" id="97ecc1ba-2f7a-4c13-9fb7-22901b6a28ee" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/view/ScenePanel.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/view/ScenePanel.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/controller/GameController.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/controller/GameController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/model/Player.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/model/Player.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -260,7 +261,11 @@
       <workItem from="1781711909801" duration="905000" />
       <workItem from="1781724395933" duration="340000" />
       <workItem from="1781774850540" duration="1123000" />
-      <workItem from="1781817117217" duration="1987000" />
+      <workItem from="1781817117217" duration="2503000" />
+      <workItem from="1781819669528" duration="39000" />
+      <workItem from="1781870315531" duration="119000" />
+      <workItem from="1781882517982" duration="180000" />
+      <workItem from="1781882711085" duration="4290000" />
     </task>
     <servers />
   </component>
@@ -284,7 +289,7 @@
         <line-breakpoint enabled="true" type="java-method">
           <url>file://$PROJECT_DIR$/app/src/test/java/persistence/PersistenceTest.java</url>
           <line>27</line>
-          <properties class="persistence.PersistenceTest" method="testSaveAndLoadGameState">
+          <properties class="persistence.PersistenceTest">
             <option name="EMULATED" value="true" />
             <option name="WATCH_EXIT" value="false" />
           </properties>
