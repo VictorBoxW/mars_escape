@@ -73,6 +73,7 @@ class PersistenceTest {
         assertEquals(180.0, loadedPlayer.getRotation());
         assertEquals(0.5, loadedPlayer.getWalkPhase());
         assertEquals(50, loadedPlayer.getShield());
+        assertEquals(100, loadedPlayer.getHealth());
         assertEquals(2, loadedPlayer.getInventory().size());
         assertEquals("Test Med Kit", loadedPlayer.getInventory().get(0).getName());
         assertEquals("Test Shield Cell", loadedPlayer.getInventory().get(1).getName());

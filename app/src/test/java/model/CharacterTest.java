@@ -2,6 +2,7 @@ package model;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 class CharacterTest {
@@ -24,43 +25,41 @@ class CharacterTest {
 
     @Test
     void testTakeDamage() {
-        // Base defense of Player is 4. Attack of 10 should deal 10 - 4 = 6 damage.
+        // Base defense of Player is 2. Attack of 10 should deal 10 - 2 = 8 damage.
         int damage = testCharacter.takeDamage(10);
-        assertEquals(6, damage);
-        assertEquals(94, testCharacter.getHealth());
+        assertEquals(8, damage);                     // Changed from 6
+        assertEquals(92, testCharacter.getHealth()); // Changed from 94
     }
 
     @Test
     void testTakeDamageWithShield() {
         testCharacter.addShield(10);
-        // Attack of 12 should deal 12 - 4 = 8 damage.
-        // Shield should absorb all 8 damage.
+        // Attack of 12 should deal 12 - 2 = 10 damage.
+        // Shield should absorb all 10 damage and drop to 0.
         int damage = testCharacter.takeDamage(12);
-        assertEquals(8, damage);
+        assertEquals(10, damage);                    // Changed from 8
         assertEquals(100, testCharacter.getHealth());
-        assertEquals(2, testCharacter.getShield());
+        assertEquals(0, testCharacter.getShield());   // Changed from 2
 
-        // Next attack of 10 should deal 6 damage.
-        // Shield absorbs 2, remaining 4 hits health.
-        // The return value is currently only 'shield' damage OR 'health' damage based on the logic.
-        // Wait, let's re-examine takeDamage logic in Character.java.
+        // Next attack of 10 should deal 10 - 2 = 8 damage total.
+        // Shield is empty, so all 8 hits health directly.
         damage = testCharacter.takeDamage(10);
-        assertEquals(4, damage); // This is what the code actually returns (health damage)
-        assertEquals(96, testCharacter.getHealth());
+        assertEquals(8, damage);
+        assertEquals(92, testCharacter.getHealth());
         assertEquals(0, testCharacter.getShield());
     }
 
     @Test
     void testHeal() {
         testCharacter.takeDamage(50);
-        assertEquals(54, testCharacter.getHealth());
+        assertEquals(52, testCharacter.getHealth());
 
         int healed = testCharacter.heal(20);
         assertEquals(20, healed);
-        assertEquals(74, testCharacter.getHealth());
+        assertEquals(72, testCharacter.getHealth());
 
         healed = testCharacter.heal(100); // Overheal
-        assertEquals(26, healed);
+        assertEquals(28, healed);
         assertEquals(100, testCharacter.getHealth());
     }
 
@@ -77,7 +76,7 @@ class CharacterTest {
 
     @Test
     void testCharacterDeath() {
-        testCharacter.takeDamage(104); // 104 - 4 = 100 damage
+        testCharacter.takeDamage(102); // 102 - 2 = 100 damage
         assertFalse(testCharacter.isAlive());
         assertEquals(0, testCharacter.getHealth());
     }

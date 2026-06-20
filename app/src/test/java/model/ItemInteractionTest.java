@@ -4,7 +4,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
-class ItemInteractionTest {
+class  ItemInteractionTest {
     private Player player;
 
     @BeforeEach
@@ -14,13 +14,13 @@ class ItemInteractionTest {
 
     @Test
     void testConsumableInteraction() {
-        player.takeDamage(50); // HP: 54
+        player.takeDamage(50); // HP: 52
         Consumable medKit = new Consumable("MedKit", "Heals 30", 30);
         player.addItem(medKit);
         
         String result = player.useItem(0);
         assertTrue(result.contains("used MedKit and recovered 30 health"));
-        assertEquals(84, player.getHealth());
+        assertEquals(82, player.getHealth());
         assertTrue(player.getInventory().isEmpty());
     }
 
@@ -37,12 +37,12 @@ class ItemInteractionTest {
 
     @Test
     void testOverhealConsumable() {
-        player.takeDamage(10); // HP: 94
+        player.takeDamage(10); // HP: 92
         Consumable bigMedKit = new Consumable("MegaKit", "Heals 100", 100);
         player.addItem(bigMedKit);
         
         String result = player.useItem(0);
-        assertTrue(result.contains("recovered 6 health"));
+        assertTrue(result.contains("recovered 8 health"));
         assertEquals(100, player.getHealth());
     }
 

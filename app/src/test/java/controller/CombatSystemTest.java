@@ -4,7 +4,9 @@ import model.Enemy;
 import model.Player;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
 import java.util.Random;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 class CombatSystemTest {
@@ -18,27 +20,27 @@ class CombatSystemTest {
         // For simple attack/defend tests without dodge chance, default Random is fine,
         // but we can pass a mocked or seeded Random for specific dodge scenarios.
         combatSystem = new CombatSystem(new Random(42)); // Seeded for determinism
-        player = new Player("Hero"); // HP: 100, ATK: 12, DEF: 4
-        enemy = new Enemy("Alien", 30, 10,  "I will eat you!"); // HP: 30, ATK: 10
+        player = new Player("Hero"); // HP: 100, ATK: 12, DEF: 2
+        enemy = new Enemy("Alien", 36, 10, "I will eat you!"); // HP: 36, ATK: 10
     }
 
     @Test
     void testAttackTurn() {
-        // Player attacks enemy: 12 ATK - 2 DEF = 10 Damage. Enemy HP: 30 -> 20.
-        // Enemy attacks player: 10 ATK - 4 DEF = 6 Damage. Player HP: 100 -> 94.
+        // Player attacks enemy: 12 ATK = 12 Damage. Enemy HP: 36 -> 24.
+        // Enemy attacks player: 10 ATK - 2 DEF = 8 Damage. Player HP: 100 -> 92.
         CombatTurnResult result = combatSystem.attack(player, enemy);
 
-        assertEquals(20, enemy.getHealth());
-        assertEquals(94, player.getHealth());
+        assertEquals(24, enemy.getHealth());
+        assertEquals(92, player.getHealth());
         assertFalse(result.isEnemyDefeated());
         assertFalse(result.isPlayerDefeated());
-        assertTrue(result.getMessage().contains("Hero attacks Alien for 10 damage"));
-        assertTrue(result.getMessage().contains("Alien hits Hero for 6 damage"));
+        assertTrue(result.getMessage().contains("Hero attacks Alien for 12 damage"));
+        assertTrue(result.getMessage().contains("Alien hits Hero for 8 damage"));
     }
 
     @Test
     void testDefeatEnemy() {
-        // Enemy has 30 HP. 3 player attacks should kill it.
+        // Enemy has 36 HP. 3 player attacks should kill it.
         combatSystem.attack(player, enemy);
         combatSystem.attack(player, enemy);
         CombatTurnResult result = combatSystem.attack(player, enemy);
@@ -46,6 +48,7 @@ class CombatSystemTest {
         assertEquals(0, enemy.getHealth());
         assertFalse(enemy.isAlive());
         assertTrue(result.isEnemyDefeated());
+        assertFalse(result.isPlayerDefeated());
         assertTrue(result.getMessage().contains("Alien is defeated"));
     }
 
@@ -70,14 +73,14 @@ class CombatSystemTest {
         CombatSystem dodgingCombatSystem = new CombatSystem(new Random() {
             @Override
             public int nextInt(int bound) {
-                return 99; // Always failed dodge
+                return 97; // Always failed dodge
             }
         });
 
         // Failed dodge: Enemy ATK is halved (10 / 2 = 5).
-        // Damage taken: 5 ATK - 4 DEF = 1 Damage.
+        // Damage taken: 5 ATK - 2 DEF = 3 Damage.
         CombatTurnResult result = dodgingCombatSystem.dodge(player, enemy);
-        assertEquals(99, player.getHealth()); 
-        assertTrue(result.getMessage().contains("Alien clips Hero for 1 damage"));
+        assertEquals(97, player.getHealth());
+        assertTrue(result.getMessage().contains("Alien clips Hero for 3 damage"));
     }
 }

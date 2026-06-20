@@ -6,10 +6,9 @@
   <component name="ChangeListManager">
     <list default="true" id="97ecc1ba-2f7a-4c13-9fb7-22901b6a28ee" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/controller/GameController.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/controller/GameController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/model/Character.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/model/Character.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/model/Enemy.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/model/Enemy.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/test/java/controller/CombatSystemTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/test/java/controller/CombatSystemTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/test/java/model/CharacterTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/test/java/model/CharacterTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/test/java/model/ItemInteractionTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/test/java/model/ItemInteractionTest.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/test/java/persistence/PersistenceTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/test/java/persistence/PersistenceTest.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -90,12 +89,24 @@
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
     "Gradle.CharacterTest.executor": "Run",
+    "Gradle.CharacterTest.testCharacterDeath.executor": "Run",
+    "Gradle.CharacterTest.testHeal.executor": "Run",
+    "Gradle.CharacterTest.testTakeDamage.executor": "Run",
+    "Gradle.CharacterTest.testTakeDamageWithShield.executor": "Run",
     "Gradle.CombatSystemTest.executor": "Run",
+    "Gradle.CombatSystemTest.testAttackTurn.executor": "Run",
+    "Gradle.CombatSystemTest.testDefeatEnemy.executor": "Run",
+    "Gradle.CombatSystemTest.testDodgeFailure.executor": "Run",
     "Gradle.DoorTest.executor": "Run",
+    "Gradle.Download Sources.executor": "Run",
     "Gradle.ItemInteractionTest.executor": "Run",
+    "Gradle.ItemInteractionTest.testConsumableInteraction.executor": "Run",
+    "Gradle.ItemInteractionTest.testNoUsableItem.executor": "Run",
+    "Gradle.ItemInteractionTest.testOverhealConsumable.executor": "Run",
     "Gradle.MarsEscape [:app:it.unicam.cs.mpgc.rpg130901.App.main()].executor": "Run",
     "Gradle.MarsEscape [:app:run].executor": "Run",
     "Gradle.MarsEscape [:app:test].executor": "Run",
+    "Gradle.PersistenceTest.executor": "Run",
     "Gradle.PersistenceTest.testSaveAndLoadGameState.executor": "Run",
     "Gradle.PlayerTest.executor": "Run",
     "Gradle.PlayerTest.testEnergyCrystal.executor": "Run",
@@ -120,21 +131,8 @@
     "vue.rearranger.settings.migration": "true"
   }
 }]]></component>
-  <component name="RunManager" selected="Application.App">
-    <configuration name="App" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
-      <option name="MAIN_CLASS_NAME" value="it.unicam.cs.mpgc.rpg130901.App" />
-      <module name="MarsEscape.app.main" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="it.unicam.cs.mpgc.rpg130901.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
-    <configuration name="CharacterTest" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
+  <component name="RunManager" selected="Gradle.CombatSystemTest.testDefeatEnemy">
+    <configuration name="CombatSystemTest.testAttackTurn" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
       <ExternalSystemSettings>
         <option name="executionName" />
         <option name="externalProjectPath" value="$PROJECT_DIR$" />
@@ -147,7 +145,7 @@
           <list>
             <option value=":app:test" />
             <option value="--tests" />
-            <option value="&quot;model.CharacterTest&quot;" />
+            <option value="&quot;controller.CombatSystemTest.testAttackTurn&quot;" />
           </list>
         </option>
         <option name="vmOptions" />
@@ -161,7 +159,7 @@
       <GradleCoverageDisabled>false</GradleCoverageDisabled>
       <method v="2" />
     </configuration>
-    <configuration name="DoorTest" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
+    <configuration name="CombatSystemTest.testDefeatEnemy" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
       <ExternalSystemSettings>
         <option name="executionName" />
         <option name="externalProjectPath" value="$PROJECT_DIR$" />
@@ -174,7 +172,7 @@
           <list>
             <option value=":app:test" />
             <option value="--tests" />
-            <option value="&quot;model.DoorTest&quot;" />
+            <option value="&quot;controller.CombatSystemTest.testDefeatEnemy&quot;" />
           </list>
         </option>
         <option name="vmOptions" />
@@ -188,7 +186,7 @@
       <GradleCoverageDisabled>false</GradleCoverageDisabled>
       <method v="2" />
     </configuration>
-    <configuration name="ItemInteractionTest" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
+    <configuration name="CombatSystemTest.testDodgeFailure" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
       <ExternalSystemSettings>
         <option name="executionName" />
         <option name="externalProjectPath" value="$PROJECT_DIR$" />
@@ -201,7 +199,7 @@
           <list>
             <option value=":app:test" />
             <option value="--tests" />
-            <option value="&quot;model.ItemInteractionTest&quot;" />
+            <option value="&quot;controller.CombatSystemTest.testDodgeFailure&quot;" />
           </list>
         </option>
         <option name="vmOptions" />
@@ -215,7 +213,32 @@
       <GradleCoverageDisabled>false</GradleCoverageDisabled>
       <method v="2" />
     </configuration>
-    <configuration name="PlayerTest" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
+    <configuration name="MarsEscape [:app:test]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
+      <ExternalSystemSettings>
+        <option name="executionName" />
+        <option name="externalProjectPath" value="$PROJECT_DIR$" />
+        <option name="externalSystemIdString" value="GRADLE" />
+        <option name="scriptParameters" />
+        <option name="taskDescriptions">
+          <list />
+        </option>
+        <option name="taskNames">
+          <list>
+            <option value=":app:test" />
+          </list>
+        </option>
+        <option name="vmOptions" />
+      </ExternalSystemSettings>
+      <ExternalSystemDebugServerProcess>true</ExternalSystemDebugServerProcess>
+      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
+      <ExternalSystemDebugDisabled>false</ExternalSystemDebugDisabled>
+      <DebugAllEnabled>false</DebugAllEnabled>
+      <RunAsTest>false</RunAsTest>
+      <GradleProfilingDisabled>false</GradleProfilingDisabled>
+      <GradleCoverageDisabled>false</GradleCoverageDisabled>
+      <method v="2" />
+    </configuration>
+    <configuration name="PersistenceTest.testSaveAndLoadGameState" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
       <ExternalSystemSettings>
         <option name="executionName" />
         <option name="externalProjectPath" value="$PROJECT_DIR$" />
@@ -228,7 +251,7 @@
           <list>
             <option value=":app:test" />
             <option value="--tests" />
-            <option value="&quot;model.PlayerTest&quot;" />
+            <option value="&quot;persistence.PersistenceTest.testSaveAndLoadGameState&quot;" />
           </list>
         </option>
         <option name="vmOptions" />
@@ -244,11 +267,11 @@
     </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="Application.App" />
-        <item itemvalue="Gradle.PlayerTest" />
-        <item itemvalue="Gradle.ItemInteractionTest" />
-        <item itemvalue="Gradle.DoorTest" />
-        <item itemvalue="Gradle.CharacterTest" />
+        <item itemvalue="Gradle.CombatSystemTest.testDefeatEnemy" />
+        <item itemvalue="Gradle.MarsEscape [:app:test]" />
+        <item itemvalue="Gradle.CombatSystemTest.testAttackTurn" />
+        <item itemvalue="Gradle.CombatSystemTest.testDodgeFailure" />
+        <item itemvalue="Gradle.PersistenceTest.testSaveAndLoadGameState" />
       </list>
     </recent_temporary>
   </component>
@@ -277,7 +300,10 @@
       <workItem from="1781819669528" duration="39000" />
       <workItem from="1781870315531" duration="119000" />
       <workItem from="1781882517982" duration="180000" />
-      <workItem from="1781882711085" duration="6388000" />
+      <workItem from="1781882711085" duration="7471000" />
+      <workItem from="1781890802443" duration="1820000" />
+      <workItem from="1781909150911" duration="253000" />
+      <workItem from="1781963345347" duration="1346000" />
     </task>
     <servers />
   </component>
@@ -298,15 +324,6 @@
   <component name="XDebuggerManager">
     <breakpoint-manager>
       <breakpoints>
-        <line-breakpoint enabled="true" type="java-method">
-          <url>file://$PROJECT_DIR$/app/src/test/java/persistence/PersistenceTest.java</url>
-          <line>27</line>
-          <properties class="persistence.PersistenceTest" method="testSaveAndLoadGameState">
-            <option name="EMULATED" value="true" />
-            <option name="WATCH_EXIT" value="false" />
-          </properties>
-          <option name="timeStamp" value="1" />
-        </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/app/src/main/java/it/unicam/cs/mpgc/rpg130901/App.java</url>
           <line>5</line>
