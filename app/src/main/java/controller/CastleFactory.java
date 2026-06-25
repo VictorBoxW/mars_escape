@@ -4,15 +4,7 @@ import java.awt.Rectangle;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
-import model.Castle;
-import model.Consumable;
-import model.Door;
-import model.Enemy;
-import model.Floor;
-import model.PickableItem;
-import model.Player;
-import model.Room;
-import model.ShieldItem;
+import model.*;
 
 /**
  * Factory responsible for creating the initial game world (Castle and Player).
@@ -70,12 +62,12 @@ public class CastleFactory {
             new Room("Warrior Den", "Warrior watch.", List.of(new Enemy("Martian Warrior", 36, 6, "Halt!")), List.of(), 1000, 100, 180, 180),
             new Room("Exit Gate", "Final guard.", List.of(new Enemy("Martian Elite", 48, 7, "Die!")), List.of(), 2000, 2000, 180, 180)
         );
-        Floor f1 = new Floor("Lower Bastion", rooms1, commonWalls, items1, mapSize, mapSize);
+        Floor f1 = new Floor("Lower Bastion", rooms1, commonWalls, items1, mapSize, mapSize, new KeyDropBehavior(1));
         // Big brownish doors in maze gaps
         f1.addDoor(new Door(40, 1800, 360, 40));    // Med Kit area entry gap
         f1.addDoor(new Door(2000, 1600, 360, 40));  // Shield area entry gap
         // Key-locked Exit Door in the bottom wall
-        f1.addDoor(new Door(2000, 2360, 180, 40, true, true));
+        f1.addDoor(new Door(2000, 2360, 180, 40, true, true, new StandardDoorUnlockStrategy(1)));
         floors.add(f1);
 
         // Floor 2
@@ -89,11 +81,11 @@ public class CastleFactory {
             new Room("Data Vault", "Guardian.", List.of(new Enemy("Alien Guardian", 72, 9, "Aagh!")), List.of(), 1000, 100, 180, 180),
             new Room("Lab Command", "Master.", List.of(new Enemy("Alien Master", 84, 10, "Stronger!")), List.of(), 2000, 2000, 180, 180)
         );
-        Floor f2 = new Floor("Research Wing", rooms2, commonWalls, items2, mapSize, mapSize);
+        Floor f2 = new Floor("Research Wing", rooms2, commonWalls, items2, mapSize, mapSize, new KeyDropBehavior(2));
         f2.addDoor(new Door(40, 1800, 360, 40));
         f2.addDoor(new Door(2000, 1600, 360, 40));
         // Key-locked Exit Door in the bottom wall
-        f2.addDoor(new Door(2000, 2360, 180, 40, true, true));
+        f2.addDoor(new Door(2000, 2360, 180, 40, true, true, new StandardDoorUnlockStrategy(2)));
         floors.add(f2);
 
         // Floor 3
@@ -105,13 +97,13 @@ public class CastleFactory {
         List<Room> rooms3 = List.of(
             new Room("Great Hall", "Royal Guard.", List.of(new Enemy("Royal Guard", 84, 12, "Intruder!")), List.of(), 100, 1000, 180, 180),
             new Room("Sanctum", "Sentinel.", List.of(new Enemy("Elite Sentinel", 96, 13, "Stop!")), List.of(), 1000, 100, 180, 180),
-            new Room("Core Chamber", "Dark Alien.", List.of(new Enemy("Dark Alien", 120, 14, "THE CRYSTAL IS MINE!", true)), List.of(), 2000, 2000, 300, 300)
+            new Room("Core Chamber", "Dark Alien.", List.of(new Enemy("Dark Alien", 120, 14, "THE CRYSTAL IS MINE!", true)), List.of(), 2000, 2000, 300, 300, true)
         );
-        Floor f3 = new Floor("Throne Floor", rooms3, commonWalls, items3, mapSize, mapSize);
+        Floor f3 = new Floor("Throne Floor", rooms3, commonWalls, items3, mapSize, mapSize, new BossDropBehavior(3));
         f3.addDoor(new Door(40, 1800, 360, 40));
         f3.addDoor(new Door(2000, 1600, 360, 40));
         // Key-locked Exit Door on Floor 3
-        f3.addDoor(new Door(2000, 2360, 180, 40, true, true));
+        f3.addDoor(new Door(2000, 2360, 180, 40, true, true, new FinalFloorDoorUnlockStrategy(3)));
         floors.add(f3);
 
         return new Castle(floors);

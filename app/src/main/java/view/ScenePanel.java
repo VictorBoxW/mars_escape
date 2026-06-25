@@ -84,23 +84,11 @@ public class ScenePanel extends JPanel {
             if (door.isNear(player.getX(), player.getY(), 100)) {
                 String promptText;
                 if (door.isLocked()) {
-                    int floorNum = controller.getCastle().getCurrentFloorNumber();
-                    boolean hasKey = player.getInventory().stream()
-                            .anyMatch(i -> i.getItemType() == model.ItemType.KEY && ((model.Key) i).getFloorLevel() == floorNum);
-
-                    if (floorNum == 3) {
-                        boolean hasDiamond = player.getInventory().stream().anyMatch(i -> i.getItemType() == model.ItemType.DIAMOND);
-                        if (hasKey && hasDiamond) {
-                            promptText = "Press 'O' to Unlock Door";
-                        } else {
-                            promptText = "You have to obtain both the Key\nand the Diamond to open this door.";
-                        }
+                    model.DoorUnlockStrategy strategy = door.getUnlockStrategy();
+                    if (strategy != null) {
+                        promptText = strategy.getPromptText(player);
                     } else {
-                        if (hasKey) {
-                            promptText = "Press 'O' to Unlock Door";
-                        } else {
-                            promptText = "You have to obtain the key\nin order to open the door.";
-                        }
+                        promptText = "Door is Locked";
                     }
                 } else {
                     String action = door.isOpen() ? "Close" : "Open";
@@ -113,9 +101,9 @@ public class ScenePanel extends JPanel {
         }
 
         // Draw Boss Gate prompt
-        if (controller.getCastle().getCurrentFloorNumber() == 3 && !floor.canAccessBoss()) {
+        if (!floor.canAccessBoss()) {
             for (model.Room room : floor.getRooms()) {
-                if (room.getName().equals("Core Chamber")) {
+                if (room.isBossRoom()) {
                     int bx = room.getX() + room.getWidth() / 2;
                     int by = room.getY() + room.getHeight() / 2;
                     double dist = Math.sqrt(Math.pow(player.getX() - bx, 2) + Math.pow(player.getY() - by, 2));
@@ -200,7 +188,7 @@ public class ScenePanel extends JPanel {
     private void drawRoom(Graphics2D g2d, model.Room room) {
         if (!room.isCleared()) {
             // Boxes and names removed as requested
-            boolean isBoss = room.getName().equals("Core Chamber");
+            boolean isBoss = room.isBossRoom();
             drawTopDownAlien(g2d, room.getX() + room.getWidth() / 2, room.getY() + room.getHeight() / 2, isBoss);
         }
     }

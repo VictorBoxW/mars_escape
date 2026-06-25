@@ -14,8 +14,13 @@ public class Floor implements java.io.Serializable {
     private final List<Door> doors;
     private final int width;
     private final int height;
+    private final FloorClearedDropBehavior clearedDropBehavior;
 
     public Floor(String name, List<Room> rooms, List<Rectangle> walls, List<PickableItem> items, int width, int height) {
+        this(name, rooms, walls, items, width, height, null);
+    }
+
+    public Floor(String name, List<Room> rooms, List<Rectangle> walls, List<PickableItem> items, int width, int height, FloorClearedDropBehavior clearedDropBehavior) {
         this.name = name;
         this.rooms = new ArrayList<>(rooms);
         this.walls = new ArrayList<>(walls);
@@ -23,6 +28,7 @@ public class Floor implements java.io.Serializable {
         this.doors = new ArrayList<>();
         this.width = width;
         this.height = height;
+        this.clearedDropBehavior = clearedDropBehavior;
     }
 
     public void addDoor(Door door) {
@@ -73,8 +79,14 @@ public class Floor implements java.io.Serializable {
 
     public boolean canAccessBoss() {
         return rooms.stream()
-                .filter(r -> !r.getName().equals("Core Chamber"))
+                .filter(r -> !r.isBossRoom())
                 .allMatch(Room::isCleared);
+    }
+
+    public void spawnClearedDrops(Player player, java.util.function.Consumer<String> logConsumer) {
+        if (clearedDropBehavior != null) {
+            clearedDropBehavior.spawnDrops(this, player, logConsumer);
+        }
     }
 
     public boolean isCleared() {

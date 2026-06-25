@@ -16,8 +16,13 @@ public class Room implements java.io.Serializable {
     private int y;
     private int width;
     private int height;
+    private final boolean bossRoom;
 
     public Room(String name, String description, List<Enemy> enemies, List<Item> rewards, int x, int y, int width, int height) {
+        this(name, description, enemies, rewards, x, y, width, height, false);
+    }
+
+    public Room(String name, String description, List<Enemy> enemies, List<Item> rewards, int x, int y, int width, int height, boolean bossRoom) {
         this.name = name;
         this.description = description;
         this.enemies = new ArrayList<>(enemies);
@@ -26,6 +31,11 @@ public class Room implements java.io.Serializable {
         this.y = y;
         this.width = width;
         this.height = height;
+        this.bossRoom = bossRoom;
+    }
+
+    public boolean isBossRoom() {
+        return bossRoom;
     }
 
     public int getX() { return x; }

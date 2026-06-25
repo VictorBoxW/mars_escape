@@ -12,12 +12,17 @@ public class Door implements java.io.Serializable {
     private boolean locked;
     private boolean exitDoor;
     private double animProgress; // 0 = closed, 1 = open
+    private DoorUnlockStrategy unlockStrategy;
 
     public Door(int x, int y, int width, int height) {
-        this(x, y, width, height, false, false);
+        this(x, y, width, height, false, false, null);
     }
 
     public Door(int x, int y, int width, int height, boolean locked, boolean exitDoor) {
+        this(x, y, width, height, locked, exitDoor, null);
+    }
+
+    public Door(int x, int y, int width, int height, boolean locked, boolean exitDoor, DoorUnlockStrategy unlockStrategy) {
         this.x = x;
         this.y = y;
         this.width = width;
@@ -25,7 +30,16 @@ public class Door implements java.io.Serializable {
         this.open = false;
         this.locked = locked;
         this.exitDoor = exitDoor;
+        this.unlockStrategy = unlockStrategy;
         this.animProgress = 0;
+    }
+
+    public DoorUnlockStrategy getUnlockStrategy() {
+        return unlockStrategy;
+    }
+
+    public void setUnlockStrategy(DoorUnlockStrategy unlockStrategy) {
+        this.unlockStrategy = unlockStrategy;
     }
 
     public boolean isLocked() {

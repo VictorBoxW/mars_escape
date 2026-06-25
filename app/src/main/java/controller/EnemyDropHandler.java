@@ -65,19 +65,7 @@ public class EnemyDropHandler {
 
     private void spawnDrops(Floor floor, Castle castle, Player player, GameView gamePanel) {
         if (floor.isCleared()) {
-            if (castle.getCurrentFloorNumber() == 3) {
-                // Final Boss drops Key and Diamond
-                Key key = new Key(3);
-                Diamond diamond = new Diamond();
-                floor.addItem(new PickableItem(key, player.getX() + 40, player.getY()));
-                floor.addItem(new PickableItem(diamond, player.getX() - 40, player.getY()));
-                gamePanel.appendLog("System: The Dark Alien has dropped the fuel key and the ENERGY DIAMOND!");
-            } else {
-                // Floor 1 & 2 drop Key
-                Key key = new Key(castle.getCurrentFloorNumber());
-                floor.addItem(new PickableItem(key, player.getX() + 40, player.getY()));
-                gamePanel.appendLog("System: The final guardian has dropped a glowing Access Key!");
-            }
+            floor.spawnClearedDrops(player, gamePanel::appendLog);
         }
     }
 }

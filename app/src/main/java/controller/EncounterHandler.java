@@ -23,7 +23,7 @@ public class EncounterHandler {
         Room room = floor.getRoomAt(player.getX(), player.getY());
         if (room != null && !room.isCleared()) {
             // Boss Gate Check
-            if (room.getName().equals("Core Chamber") && !floor.canAccessBoss()) {
+            if (room.isBossRoom() && !floor.canAccessBoss()) {
                 gamePanel.appendLog("System: You have to defeat both Aliens before confronting the Dark Alien boss!");
                 return null;
             }
