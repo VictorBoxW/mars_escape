@@ -5,7 +5,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
-public class Room implements Interactable, java.io.Serializable {
+public class Room implements java.io.Serializable {
     private static final long serialVersionUID = 1L;
     private final String name;
     private final String description;
@@ -37,12 +37,10 @@ public class Room implements Interactable, java.io.Serializable {
         return px >= x && px <= x + width && py >= y && py <= y + height;
     }
 
-    @Override
     public String getName() {
         return name;
     }
 
-    @Override
     public String getDescription() {
         return description;
     }
@@ -68,12 +66,4 @@ public class Room implements Interactable, java.io.Serializable {
         return Collections.unmodifiableList(rewards);
     }
 
-    @Override
-    public String interact(Player player) {
-        if (isCleared()) {
-            return player.getName() + " searches " + name + ". The room is secure.";
-        }
-
-        return description;
-    }
 }

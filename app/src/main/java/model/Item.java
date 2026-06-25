@@ -19,4 +19,9 @@ public abstract class Item implements Interactable, java.io.Serializable {
     public String getDescription() {
         return description;
     }
+
+    /**
+     * Returns the type discriminator for this item.
+     */
+    public abstract ItemType getItemType();
 }

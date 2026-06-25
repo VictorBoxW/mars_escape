@@ -10,4 +10,9 @@ public class Diamond extends Item {
     public String interact(Player player) {
         return "The diamond glows with immense power.";
     }
+
+    @Override
+    public ItemType getItemType() {
+        return ItemType.DIAMOND;
+    }
 }

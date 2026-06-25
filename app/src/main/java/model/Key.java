@@ -17,4 +17,9 @@ public class Key extends Item {
     public String interact(Player player) {
         return "This key grants access to the next floor of the fortress.";
     }
+
+    @Override
+    public ItemType getItemType() {
+        return ItemType.KEY;
+    }
 }

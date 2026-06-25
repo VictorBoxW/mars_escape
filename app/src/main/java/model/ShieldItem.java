@@ -15,4 +15,9 @@ public class ShieldItem extends Item {
         player.removeItem(this);
         return player.getName() + " activated " + getName() + " and gained " + shieldAmount + " shield.";
     }
+
+    @Override
+    public ItemType getItemType() {
+        return ItemType.SHIELD;
+    }
 }

@@ -86,10 +86,10 @@ public class ScenePanel extends JPanel {
                 if (door.isLocked()) {
                     int floorNum = controller.getCastle().getCurrentFloorNumber();
                     boolean hasKey = player.getInventory().stream()
-                            .anyMatch(i -> i instanceof model.Key && ((model.Key) i).getFloorLevel() == floorNum);
+                            .anyMatch(i -> i.getItemType() == model.ItemType.KEY && ((model.Key) i).getFloorLevel() == floorNum);
 
                     if (floorNum == 3) {
-                        boolean hasDiamond = player.getInventory().stream().anyMatch(i -> i instanceof model.Diamond);
+                        boolean hasDiamond = player.getInventory().stream().anyMatch(i -> i.getItemType() == model.ItemType.DIAMOND);
                         if (hasKey && hasDiamond) {
                             promptText = "Press 'O' to Unlock Door";
                         } else {
@@ -460,16 +460,16 @@ public class ScenePanel extends JPanel {
     private void drawPickableItem(Graphics2D g, model.PickableItem pi) {
         int x = pi.getX();
         int y = pi.getY();
-        String name = pi.getItem().getName();
+        model.ItemType type = pi.getItem().getItemType();
 
-        if (name.contains("Med Kit")) {
+        if (type == model.ItemType.CONSUMABLE) {
             // Green rectangle for Med Kit
             g.setColor(new Color(40, 200, 40));
             g.fillRect(x, y, 30, 20);
             g.setColor(Color.WHITE);
             g.fillRect(x + 12, y + 4, 6, 12);
             g.fillRect(x + 9, y + 7, 12, 6);
-        } else if (name.contains("Shield Cell")) {
+        } else if (type == model.ItemType.SHIELD) {
             // Dark blue cylinder for Shield Cell
             g.setColor(new Color(0, 50, 150));
             g.fillOval(x, y, 20, 10); // top
@@ -477,7 +477,7 @@ public class ScenePanel extends JPanel {
             g.fillOval(x, y + 20, 20, 10); // bottom
             g.setColor(new Color(0, 150, 255, 150));
             g.fillRect(x + 4, y + 8, 12, 14); // glow
-        } else if (pi.getItem() instanceof Key) {
+        } else if (type == model.ItemType.KEY) {
             // Glowing Access Key
             long time = System.currentTimeMillis();
             int pulse = (int) (Math.sin(time / 200.0) * 10) + 15;
@@ -495,7 +495,7 @@ public class ScenePanel extends JPanel {
             g.fillRect(x + 12, y + 5, 15, 4); // shaft
             g.fillRect(x + 22, y + 8, 4, 6);  // bit 1
             g.fillRect(x + 17, y + 8, 4, 4);  // bit 2
-        } else if (pi.getItem() instanceof model.Diamond) {
+        } else if (type == model.ItemType.DIAMOND) {
             // Glowing Energy Diamond
             long time = System.currentTimeMillis();
             int pulse = (int) (Math.sin(time / 150.0) * 15) + 20;

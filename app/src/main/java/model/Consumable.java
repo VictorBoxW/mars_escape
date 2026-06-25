@@ -24,4 +24,9 @@ public class Consumable extends Item {
 
         return player.getName() + " used " + getName() + " and recovered " + healed + " health.";
     }
+
+    @Override
+    public ItemType getItemType() {
+        return ItemType.CONSUMABLE;
+    }
 }
