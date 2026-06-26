@@ -197,8 +197,7 @@ public class GameController {
     }
 
     private void resolveCombatTurn(CombatTurnResult result) {
-        String logMessage = result.getMessage().replace("Jack", "The astronaut");
-        gamePanel.appendLog(logMessage);
+        gamePanel.appendLog(result.getMessage());
 
         if (result.isPlayerDefeated()) {
             failMission();

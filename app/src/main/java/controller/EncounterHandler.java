@@ -13,6 +13,8 @@ public class EncounterHandler {
 
     /**
      * Checks if the player's current position triggers a room encounter.
+     * Also enforces the boss-gate rule: the boss room cannot be entered
+     * until all other rooms on the floor are cleared.
      *
      * @return the encountered enemy, or {@code null} if no encounter occurs
      */

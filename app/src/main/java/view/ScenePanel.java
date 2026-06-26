@@ -433,10 +433,10 @@ public class ScenePanel extends JPanel {
         g.fillOval(centerX - fillRadius, centerY - fillRadius, fillRadius * 2, fillRadius * 2);
     }
 
-    private void drawPickableItem(Graphics2D g, model.PickableItem pi) {
-        int x = pi.getX();
-        int y = pi.getY();
-        model.ItemType type = pi.getItem().getItemType();
+    private void drawPickableItem(Graphics2D g, model.PickableItem pickable) {
+        int x = pickable.getX();
+        int y = pickable.getY();
+        model.ItemType type = pickable.getItem().getItemType();
 
         if (type == model.ItemType.CONSUMABLE) {
             // Green rectangle for Med Kit
@@ -475,9 +475,9 @@ public class ScenePanel extends JPanel {
 
             // Diamond Shape (Cyan)
             g.setColor(new Color(0, 255, 255));
-            int[] dx = {x + 15, x + 30, x + 15, x};
-            int[] dy = {y, y + 15, y + 30, y + 15};
-            g.fillPolygon(dx, dy, 4);
+            int[] diamondX = {x + 15, x + 30, x + 15, x};
+            int[] diamondY = {y, y + 15, y + 30, y + 15};
+            g.fillPolygon(diamondX, diamondY, 4);
 
             // Sparkle
             g.setColor(Color.WHITE);
