@@ -40,7 +40,7 @@ class PersistenceTest {
         player.addItem(shieldCell);
 
         List<Rectangle> walls = List.of(new Rectangle(0, 0, 100, 10));
-        List<Room> rooms = List.of(new Room("Test Room", "A test chamber", 
+        List<Room> rooms = List.of(new Room("Test Room",
             List.of(new Enemy("Martian Scout", 30, 5,  "Taunt")),
             List.of(), 50, 50, 100, 100));
         Floor floor = new Floor("Test Floor", rooms, walls, new ArrayList<>(), 1000, 1000);

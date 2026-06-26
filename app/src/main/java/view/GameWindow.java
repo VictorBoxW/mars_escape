@@ -2,10 +2,7 @@ package view;
 
 import controller.GameController;
 import java.awt.CardLayout;
-import javax.swing.JFrame;
-import javax.swing.JPanel;
-
-import java.awt.CardLayout;
+import java.awt.event.ActionEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import javax.swing.AbstractAction;
@@ -16,11 +13,12 @@ import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.KeyStroke;
-import java.awt.event.ActionEvent;
 
 public class GameWindow extends JFrame {
     private static final String MENU_CARD = "menu";
     private static final String GAME_CARD = "game";
+    /** Pixels the player moves per timer tick (~20ms); balances responsiveness with control. */
+    private static final int PLAYER_MOVE_SPEED = 8;
 
     private final CardLayout cardLayout;
     private final JPanel contentPanel;
@@ -99,35 +97,45 @@ public class GameWindow extends JFrame {
     }
 
     private void setupMovementTimer() {
-        int moveAmount = 8; // Slowed down from 12 for better control
         movementTimer = new javax.swing.Timer(20, e -> {
-            // Only update door animations + repaint when player is moving
-            // or doors are mid-animation.  This avoids 50fps full repaints
-            // when the player is idle, which was the main GPU-usage cause
-            // on high-resolution displays.
-            boolean needsUpdate = !pressedKeys.isEmpty();
-            if (!needsUpdate) {
-                // Still update if doors are animating
-                needsUpdate = controller.hasPendingAnimations();
-            }
-            if (needsUpdate) {
-                controller.update();
-            }
-
-            if (pressedKeys.isEmpty()) return;
-
-            int dx = 0;
-            int dy = 0;
-
-            if (pressedKeys.contains(java.awt.event.KeyEvent.VK_UP) || pressedKeys.contains(java.awt.event.KeyEvent.VK_W)) dy -= moveAmount;
-            if (pressedKeys.contains(java.awt.event.KeyEvent.VK_DOWN) || pressedKeys.contains(java.awt.event.KeyEvent.VK_S)) dy += moveAmount;
-            if (pressedKeys.contains(java.awt.event.KeyEvent.VK_LEFT) || pressedKeys.contains(java.awt.event.KeyEvent.VK_A)) dx -= moveAmount;
-            if (pressedKeys.contains(java.awt.event.KeyEvent.VK_RIGHT) || pressedKeys.contains(java.awt.event.KeyEvent.VK_D)) dx += moveAmount;
-
-            if (dx != 0 || dy != 0) {
-                controller.movePlayer(dx, dy);
-            }
+            updateAnimations();
+            handleMovementInput();
         });
+    }
+
+    /**
+     * Advances door animations and repaints only while the player is moving
+     * or doors are mid-animation. This avoids full repaints every tick when
+     * the player is idle, which was the main GPU-usage cause on high-res displays.
+     */
+    private void updateAnimations() {
+        boolean needsUpdate = !pressedKeys.isEmpty() || controller.hasPendingAnimations();
+        if (needsUpdate) {
+            controller.update();
+        }
+    }
+
+    private void handleMovementInput() {
+        if (pressedKeys.isEmpty()) return;
+
+        int dx = 0;
+        int dy = 0;
+
+        if (isKeyPressed(java.awt.event.KeyEvent.VK_UP, java.awt.event.KeyEvent.VK_W)) dy -= PLAYER_MOVE_SPEED;
+        if (isKeyPressed(java.awt.event.KeyEvent.VK_DOWN, java.awt.event.KeyEvent.VK_S)) dy += PLAYER_MOVE_SPEED;
+        if (isKeyPressed(java.awt.event.KeyEvent.VK_LEFT, java.awt.event.KeyEvent.VK_A)) dx -= PLAYER_MOVE_SPEED;
+        if (isKeyPressed(java.awt.event.KeyEvent.VK_RIGHT, java.awt.event.KeyEvent.VK_D)) dx += PLAYER_MOVE_SPEED;
+
+        if (dx != 0 || dy != 0) {
+            controller.movePlayer(dx, dy);
+        }
+    }
+
+    private boolean isKeyPressed(int... keyCodes) {
+        for (int code : keyCodes) {
+            if (pressedKeys.contains(code)) return true;
+        }
+        return false;
     }
 
     public void showGameOverDialog(boolean victory) {

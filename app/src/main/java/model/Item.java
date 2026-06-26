@@ -1,6 +1,6 @@
 package model;
 
-public abstract class Item implements Interactable, java.io.Serializable {
+public abstract class Item implements java.io.Serializable {
     private static final long serialVersionUID = 1L;
     private final String name;
     private final String description;
@@ -10,18 +10,15 @@ public abstract class Item implements Interactable, java.io.Serializable {
         this.description = description;
     }
 
-    @Override
     public String getName() {
         return name;
     }
 
-    @Override
     public String getDescription() {
         return description;
     }
 
-    /**
-     * Returns the type discriminator for this item.
-     */
+    public abstract String interact(Player player);
+
     public abstract ItemType getItemType();
 }

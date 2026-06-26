@@ -12,15 +12,47 @@ public class Door implements java.io.Serializable {
     private boolean locked;
     private boolean exitDoor;
     private double animProgress; // 0 = closed, 1 = open
-    private DoorUnlockStrategy unlockStrategy;
+    private final DoorUnlockStrategy unlockStrategy;
 
+    /**
+     * Creates a basic, unlocked door.
+     *
+     * @param x      the X coordinate of the door
+     * @param y      the Y coordinate of the door
+     * @param width  the width of the door
+     * @param height the height of the door
+     */
     public Door(int x, int y, int width, int height) {
         this(x, y, width, height, false, false, null);
     }
 
+    /**
+     * Creates a door that can be set as initially locked or designated as an exit door.
+     *
+     * @param x        the X coordinate of the door
+     * @param y        the Y coordinate of the door
+     * @param width    the width of the door
+     * @param height   the height of the door
+     * @param locked   true if the door requires unlocking mechanics
+     * @param exitDoor true if passing through this door transitions to another level/victory
+     */
     public Door(int x, int y, int width, int height, boolean locked, boolean exitDoor) {
         this(x, y, width, height, locked, exitDoor, null);
     }
+
+    /**
+     * Creates a fully specified door with a custom unlock strategy.
+     *
+     * @param x              the X coordinate of the door
+     * @param y              the Y coordinate of the door
+     * @param width          the width of the door
+     * @param height         the height of the door
+     * @param locked         true if the door is initially locked
+     * @param exitDoor       true if this door acts as a floor or game exit
+     * @param unlockStrategy the strategy rule used to unlock this door;
+     *                       can be {@code null} if the door is not locked or has
+     *                       no specific item requirements.
+     */
 
     public Door(int x, int y, int width, int height, boolean locked, boolean exitDoor, DoorUnlockStrategy unlockStrategy) {
         this.x = x;
@@ -38,10 +70,6 @@ public class Door implements java.io.Serializable {
         return unlockStrategy;
     }
 
-    public void setUnlockStrategy(DoorUnlockStrategy unlockStrategy) {
-        this.unlockStrategy = unlockStrategy;
-    }
-
     public boolean isLocked() {
         return locked;
     }
@@ -54,7 +82,7 @@ public class Door implements java.io.Serializable {
         return exitDoor;
     }
 
-    public double getAnimProgress() {
+    public double getOpenProgress() {
         return animProgress;
     }
 
@@ -95,9 +123,12 @@ public class Door implements java.io.Serializable {
     }
 
     public boolean isNear(int px, int py, int threshold) {
+        return distanceTo(px, py) < threshold;
+    }
+
+    private double distanceTo(int px, int py) {
         double centerX = x + width / 2.0;
         double centerY = y + height / 2.0;
-        double distance = Math.sqrt(Math.pow(px - centerX, 2) + Math.pow(py - centerY, 2));
-        return distance < threshold;
+        return Math.sqrt(Math.pow(px - centerX, 2) + Math.pow(py - centerY, 2));
     }
 }

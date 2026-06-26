@@ -9,13 +9,20 @@ import model.Player;
  */
 public class ItemPickupHandler {
 
+    private static final int PLAYER_SIZE = 40;
+
     public void checkItemPickups(Player player, Floor floor, GameView gamePanel) {
-        for (PickableItem pi : floor.getItems()) {
-            if (!pi.isPickedUp() && pi.intersects(player.getX(), player.getY(), 40, 40)) {
-                pi.setPickedUp(true);
-                player.addItem(pi.getItem());
-                gamePanel.appendLog("System: You have obtained a " + pi.getItem().getName() + "!");
+        for (PickableItem pickable : floor.getItems()) {
+            if (!pickable.isPickedUp()
+                    && pickable.isOverlappedByPlayer(player.getX(), player.getY(), PLAYER_SIZE)) {
+                pickUp(pickable, player, gamePanel);
             }
         }
+    }
+
+    private void pickUp(PickableItem pickable, Player player, GameView gamePanel) {
+        pickable.setPickedUp(true);
+        player.addItem(pickable.getItem());
+        gamePanel.appendLog("System: You have obtained a " + pickable.getItem().getName() + "!");
     }
 }

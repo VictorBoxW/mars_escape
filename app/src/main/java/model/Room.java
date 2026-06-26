@@ -8,7 +8,6 @@ import java.util.Optional;
 public class Room implements java.io.Serializable {
     private static final long serialVersionUID = 1L;
     private final String name;
-    private final String description;
     private final List<Enemy> enemies;
     private final List<Item> rewards;
     private boolean rewardsClaimed;
@@ -18,13 +17,12 @@ public class Room implements java.io.Serializable {
     private int height;
     private final boolean bossRoom;
 
-    public Room(String name, String description, List<Enemy> enemies, List<Item> rewards, int x, int y, int width, int height) {
-        this(name, description, enemies, rewards, x, y, width, height, false);
+    public Room(String name, List<Enemy> enemies, List<Item> rewards, int x, int y, int width, int height) {
+        this(name, enemies, rewards, x, y, width, height, false);
     }
 
-    public Room(String name, String description, List<Enemy> enemies, List<Item> rewards, int x, int y, int width, int height, boolean bossRoom) {
+    public Room(String name, List<Enemy> enemies, List<Item> rewards, int x, int y, int width, int height, boolean bossRoom) {
         this.name = name;
-        this.description = description;
         this.enemies = new ArrayList<>(enemies);
         this.rewards = new ArrayList<>(rewards);
         this.x = x;
@@ -51,10 +49,6 @@ public class Room implements java.io.Serializable {
         return name;
     }
 
-    public String getDescription() {
-        return description;
-    }
-
     public List<Enemy> getEnemies() {
         return Collections.unmodifiableList(enemies);
     }
@@ -67,7 +61,11 @@ public class Room implements java.io.Serializable {
         return enemies.stream().filter(Enemy::isAlive).findFirst();
     }
 
-    public List<Item> claimRewards() {
+    /**
+     * Returns the room's reward items and marks them as claimed.
+     * Subsequent calls return an empty list.
+     */
+    public List<Item> claimRewardsOnce() {
         if (rewardsClaimed) {
             return List.of();
         }

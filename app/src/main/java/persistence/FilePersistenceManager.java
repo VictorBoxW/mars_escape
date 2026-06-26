@@ -7,6 +7,12 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import model.GameState;
 
+/**
+ * Persists game state to disk using Java object serialization.
+ * Note: saved files become incompatible if the serialized model classes
+ * change structure (a {@link ClassNotFoundException} or stream error on load
+ * indicates a save from an incompatible version).
+ */
 public class FilePersistenceManager implements PersistenceManager {
     @Override
     public void save(GameState state, String filepath) throws IOException {

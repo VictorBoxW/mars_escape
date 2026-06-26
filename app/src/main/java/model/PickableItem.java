@@ -7,8 +7,7 @@ public class PickableItem implements java.io.Serializable {
     private final Item item;
     private final int x;
     private final int y;
-    private final int width = 30;
-    private final int height = 30;
+    private static final int ITEM_SIZE = 30;
     private boolean pickedUp;
 
     public PickableItem(Item item, int x, int y) {
@@ -39,10 +38,10 @@ public class PickableItem implements java.io.Serializable {
     }
 
     public Rectangle getBounds() {
-        return new Rectangle(x, y, width, height);
+        return new Rectangle(x, y, ITEM_SIZE, ITEM_SIZE);
     }
 
-    public boolean intersects(int px, int py, int pw, int ph) {
-        return getBounds().intersects(new Rectangle(px - pw / 2, py - ph / 2, pw, ph));
+    public boolean isOverlappedByPlayer(int px, int py, int playerSize) {
+        return getBounds().intersects(new Rectangle(px - playerSize / 2, py - playerSize / 2, playerSize, playerSize));
     }
 }

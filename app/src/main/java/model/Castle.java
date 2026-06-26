@@ -8,7 +8,6 @@ public class Castle implements java.io.Serializable {
     private static final long serialVersionUID = 1L;
     private final List<Floor> floors;
     private int currentFloorIndex;
-    private boolean energyCrystalTaken;
 
     public Castle(List<Floor> floors) {
         this.floors = new ArrayList<>(floors);
@@ -26,6 +25,7 @@ public class Castle implements java.io.Serializable {
         return floors.get(currentFloorIndex);
     }
 
+    /** Returns the 1-based floor number for display purposes. */
     public int getCurrentFloorNumber() {
         return Math.min(currentFloorIndex + 1, floors.size());
     }
@@ -34,6 +34,10 @@ public class Castle implements java.io.Serializable {
         return floors.size();
     }
 
+    /**
+     * Advances to the next floor.
+     * @return true if a next floor exists, false if all floors have been completed
+     */
     public boolean advanceFloor() {
         if (currentFloorIndex < floors.size()) {
             currentFloorIndex++;
@@ -42,11 +46,4 @@ public class Castle implements java.io.Serializable {
         return currentFloorIndex < floors.size();
     }
 
-    public void takeEnergyCrystal() {
-        energyCrystalTaken = true;
-    }
-
-    public boolean isEnergyCrystalTaken() {
-        return energyCrystalTaken;
-    }
 }

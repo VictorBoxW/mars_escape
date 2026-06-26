@@ -7,25 +7,25 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.RenderingHints;
-import java.util.Random;
 import javax.swing.JPanel;
 
 import model.Castle;
-import model.Diamond;
 import model.Enemy;
 import model.Floor;
-import model.Key;
 import model.Player;
-import model.Room;
 
 public class ScenePanel extends JPanel {
     private final GameController controller;
-    private final Random random = new Random(42);
 
     // Design resolution — all combat-scene coordinates are authored against this size
     private static final double BASE_WIDTH = 880.0;
     private static final double BASE_HEIGHT = 600.0;
+
+    private static final int DOOR_INTERACTION_RANGE = 100;
+    private static final int BOSS_GATE_WARN_DISTANCE = 300;
+    private static final int VISION_RADIUS = 350;
+    private static final int TORCH_CULL_MARGIN = 80;
+    private static final int GRID_CELL_SIZE = 100;
 
     public ScenePanel(GameController controller) {
         this.controller = controller;
@@ -51,17 +51,17 @@ public class ScenePanel extends JPanel {
         Floor floor = controller.getCastle().getCurrentFloor();
         if (player == null || floor == null) return;
 
-        int w = getWidth();
-        int h = getHeight();
+        int panelWidth = getWidth();
+        int panelHeight = getHeight();
 
-        int camX = Math.max(0, Math.min(player.getX() - w / 2, floor.getWidth() - w));
-        int camY = Math.max(0, Math.min(player.getY() - h / 2, floor.getHeight() - h));
+        int camX = Math.max(0, Math.min(player.getX() - panelWidth / 2, floor.getWidth() - panelWidth));
+        int camY = Math.max(0, Math.min(player.getY() - panelHeight / 2, floor.getHeight() - panelHeight));
 
         // Clip to visible viewport to avoid painting off-screen content
-        g2d.setClip(0, 0, w, h);
+        g2d.setClip(0, 0, panelWidth, panelHeight);
         g2d.translate(-camX, -camY);
 
-        drawBackground(g2d, floor, camX, camY, w, h);
+        drawBackground(g2d, floor, camX, camY, panelWidth, panelHeight);
 
         for (model.Room room : floor.getRooms()) {
             drawRoom(g2d, room);
@@ -79,46 +79,50 @@ public class ScenePanel extends JPanel {
 
         drawTopDownAstronaut(g2d, player.getX(), player.getY(), player.getRotation(), player.getWalkPhase());
 
-        // Draw interaction prompt
-        for (model.Door door : floor.getDoors()) {
-            if (door.isNear(player.getX(), player.getY(), 100)) {
-                String promptText;
-                if (door.isLocked()) {
-                    model.DoorUnlockStrategy strategy = door.getUnlockStrategy();
-                    if (strategy != null) {
-                        promptText = strategy.getPromptText(player);
-                    } else {
-                        promptText = "Door is Locked";
-                    }
-                } else {
-                    String action = door.isOpen() ? "Close" : "Open";
-                    promptText = "Press 'O' to " + action + " Door";
-                }
+        drawDoorPrompts(g2d, floor, player);
+        drawBossGatePrompt(g2d, floor, player);
 
-                drawPrompt(g2d, promptText, player.getX(), player.getY() - 60);
-                break;
-            }
-        }
-
-        // Draw Boss Gate prompt
-        if (!floor.canAccessBoss()) {
-            for (model.Room room : floor.getRooms()) {
-                if (room.isBossRoom()) {
-                    int bx = room.getX() + room.getWidth() / 2;
-                    int by = room.getY() + room.getHeight() / 2;
-                    double dist = Math.sqrt(Math.pow(player.getX() - bx, 2) + Math.pow(player.getY() - by, 2));
-                    if (dist < 300) {
-                        drawPrompt(g2d, "You have to defeat both Aliens\nbefore confronting the Dark Alien boss!", bx, by - 80);
-                    }
-                }
-            }
-        }
-
-        drawFogOfWar(g2d, player.getX(), player.getY(), camX, camY, w, h);
+        drawFogOfWar(g2d, player.getX(), player.getY(), camX, camY, panelWidth, panelHeight);
 
         g2d.translate(camX, camY);
         g2d.setClip(null);
         drawLocation(g2d, controller.getCastle());
+    }
+
+    /** Draws the "open/close/unlock" prompt above the first door the player is standing near. */
+    private void drawDoorPrompts(Graphics2D g2d, Floor floor, Player player) {
+        for (model.Door door : floor.getDoors()) {
+            if (door.isNear(player.getX(), player.getY(), DOOR_INTERACTION_RANGE)) {
+                drawPrompt(g2d, doorPromptText(door, player), player.getX(), player.getY() - 60);
+                break;
+            }
+        }
+    }
+
+    private String doorPromptText(model.Door door, Player player) {
+        if (!door.isLocked()) {
+            String action = door.isOpen() ? "Close" : "Open";
+            return "Press 'O' to " + action + " Door";
+        }
+
+        model.DoorUnlockStrategy strategy = door.getUnlockStrategy();
+        return (strategy != null) ? strategy.getPromptText(player) : "Door is Locked";
+    }
+
+    /** Draws the boss-gate warning when the player approaches the boss room before clearing the floor. */
+    private void drawBossGatePrompt(Graphics2D g2d, Floor floor, Player player) {
+        if (floor.canAccessBoss()) return;
+
+        for (model.Room room : floor.getRooms()) {
+            if (!room.isBossRoom()) continue;
+
+            int bx = room.getX() + room.getWidth() / 2;
+            int by = room.getY() + room.getHeight() / 2;
+            double dist = Math.sqrt(Math.pow(player.getX() - bx, 2) + Math.pow(player.getY() - by, 2));
+            if (dist < BOSS_GATE_WARN_DISTANCE) {
+                drawPrompt(g2d, "You have to defeat both Aliens\nbefore confronting the Dark Alien boss!", bx, by - 80);
+            }
+        }
     }
 
     /**
@@ -127,8 +131,6 @@ public class ScenePanel extends JPanel {
      * with a RadialGradientPaint every frame; now we only fill the viewport.
      */
     private void drawFogOfWar(Graphics2D g2d, int px, int py, int camX, int camY, int vpW, int vpH) {
-        int visionRadius = 350;
-
         // Only fill the visible viewport rectangle (camX..camX+vpW, camY..camY+vpH)
         // instead of the entire floor (0..floorWidth, 0..floorHeight)
         java.awt.Rectangle viewport = new java.awt.Rectangle(camX, camY, vpW, vpH);
@@ -137,7 +139,7 @@ public class ScenePanel extends JPanel {
         Color[] colors = {new Color(0, 0, 0, 0), new Color(0, 0, 0, 150), new Color(0, 0, 0, 255)};
 
         java.awt.RadialGradientPaint p = new java.awt.RadialGradientPaint(
-                px, py, visionRadius, dist, colors);
+                px, py, VISION_RADIUS, dist, colors);
 
         g2d.setPaint(p);
         g2d.fill(viewport);
@@ -244,30 +246,26 @@ public class ScenePanel extends JPanel {
         g2d.setPaint(glow);
         g2d.fillOval(x - 75, y - 75, 150, 150);
 
-        // Alien Body (Visible from above)
-        if (isBoss) {
-            g2d.setColor(new Color(20, 20, 20));
-        } else {
-            g2d.setColor(new Color(45, 150, 45));
-        }
+        // Alien Body (Visible from above) — slightly darker shade than the head
+        g2d.setColor(isBoss ? new Color(20, 20, 20) : new Color(45, 150, 45));
         g2d.fillOval(x - 20, y - 5, 40, 30);
 
         // Large Alien Head (Combat style)
-        if (isBoss) {
-            g2d.setColor(new Color(30, 30, 30));
-        } else {
-            g2d.setColor(new Color(60, 190, 60));
-        }
+        g2d.setColor(getAlienBodyColor(isBoss));
         g2d.fillOval(x - 28, y - 35, 56, 45);
 
         // Almond Eyes (Combat style)
-        if (isBoss) {
-            g2d.setColor(new Color(255, 0, 0));
-        } else {
-            g2d.setColor(Color.BLACK);
-        }
+        g2d.setColor(getAlienEyeColor(isBoss));
         g2d.fillOval(x - 20, y - 22, 15, 22); // Left eye
         g2d.fillOval(x + 5, y - 22, 15, 22);  // Right eye
+    }
+
+    private Color getAlienBodyColor(boolean isBoss) {
+        return isBoss ? new Color(30, 30, 30) : new Color(60, 190, 60);
+    }
+
+    private Color getAlienEyeColor(boolean isBoss) {
+        return isBoss ? new Color(255, 0, 0) : Color.BLACK;
     }
 
     /**
@@ -275,22 +273,22 @@ public class ScenePanel extends JPanel {
      * Now accepts viewport bounds so we only draw grid cells visible on screen.
      */
     private void drawBackground(Graphics2D g2d, Floor floor, int vpX, int vpY, int vpW, int vpH) {
-        int w = floor != null ? floor.getWidth() : getWidth();
-        int h = floor != null ? floor.getHeight() : getHeight();
+        int floorWidth = floor != null ? floor.getWidth() : getWidth();
+        int floorHeight = floor != null ? floor.getHeight() : getHeight();
 
         g2d.setColor(new Color(20, 20, 25));
         g2d.fillRect(vpX, vpY, vpW, vpH);
 
         // Only draw grid cells that overlap the viewport
-        int gridStartX = Math.max(0, (vpX / 100) * 100);
-        int gridStartY = Math.max(0, (vpY / 100) * 100);
-        int gridEndX = Math.min(w, vpX + vpW + 100);
-        int gridEndY = Math.min(h, vpY + vpH + 100);
+        int gridStartX = Math.max(0, (vpX / GRID_CELL_SIZE) * GRID_CELL_SIZE);
+        int gridStartY = Math.max(0, (vpY / GRID_CELL_SIZE) * GRID_CELL_SIZE);
+        int gridEndX = Math.min(floorWidth, vpX + vpW + GRID_CELL_SIZE);
+        int gridEndY = Math.min(floorHeight, vpY + vpH + GRID_CELL_SIZE);
 
         g2d.setColor(new Color(30, 30, 40));
-        for (int i = gridStartX; i < gridEndX; i += 100) {
-            for (int j = gridStartY; j < gridEndY; j += 100) {
-                g2d.drawRect(i, j, 100, 100);
+        for (int i = gridStartX; i < gridEndX; i += GRID_CELL_SIZE) {
+            for (int j = gridStartY; j < gridEndY; j += GRID_CELL_SIZE) {
+                g2d.drawRect(i, j, GRID_CELL_SIZE, GRID_CELL_SIZE);
             }
         }
 
@@ -309,23 +307,23 @@ public class ScenePanel extends JPanel {
         }
 
         if (floor != null) {
-            for (int i = 200; i < w; i += 400) {
-                for (int j = 200; j < h; j += 400) {
+            for (int i = 200; i < floorWidth; i += 400) {
+                for (int j = 200; j < floorHeight; j += 400) {
                     // Skip torches in the new upper corridor to keep it clean
                     if (i > 1240 && j < 1100) continue;
                     // Skip torch overlapping with Med Kit door
                     if (i == 200 && j == 1800) continue;
                     // Only draw torches near the viewport (glow radius ~60px)
-                    if (i >= vpX - 80 && i <= vpX + vpW + 80 && j >= vpY - 80 && j <= vpY + vpH + 80) {
+                    if (i >= vpX - TORCH_CULL_MARGIN && i <= vpX + vpW + TORCH_CULL_MARGIN
+                            && j >= vpY - TORCH_CULL_MARGIN && j <= vpY + vpH + TORCH_CULL_MARGIN) {
                         drawTorch(g2d, i, j);
                     }
                 }
             }
         } else {
             drawTorch(g2d, 100, 100);
-            drawTorch(g2d, w / 2, 100);
-            drawTorch(g2d, w - 100, 100);
-            ;
+            drawTorch(g2d, floorWidth / 2, 100);
+            drawTorch(g2d, floorWidth - 100, 100);
         }
     }
 
@@ -412,37 +410,27 @@ public class ScenePanel extends JPanel {
     }
 
     private void drawAlien(Graphics2D g, int x, int y, boolean isBoss) {
-        if (isBoss) {
-            g.setColor(new Color(30, 30, 30));
-        } else {
-            g.setColor(new Color(60, 190, 60));
-        }
+        g.setColor(getAlienBodyColor(isBoss));
         g.fillOval(x, y - 70, 50, 75);
         g.fillOval(x - 5, y - 100, 60, 45);
 
-        if (isBoss) {
-            g.setColor(new Color(255, 0, 0));
-        } else {
-            g.setColor(Color.BLACK);
-        }
+        g.setColor(getAlienEyeColor(isBoss));
         g.fillOval(x + 8, y - 88, 16, 22);
         g.fillOval(x + 36, y - 88, 16, 22);
     }
 
-    private void drawCrystal(Graphics2D g2d) {
-        g2d.setColor(new Color(0, 255, 255, 200));
-        int[] xPoints = {440, 460, 480, 460};
-        int[] yPoints = {100, 70, 100, 130};
-        g2d.fillPolygon(xPoints, yPoints, 4);
-        g2d.setColor(Color.WHITE);
-        g2d.setFont(new Font(Font.MONOSPACED, Font.BOLD, 14));
-        g2d.drawString("FUEL CRYSTAL SECURED", 400, 160);
-    }
-
-    private void drawEmptyRoom(Graphics2D g2d) {
-        g2d.setColor(new Color(200, 200, 200));
-        g2d.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 14));
-        g2d.drawString("AREA CLEAR", 420, 110);
+    /**
+     * Draws a radial glow that fades from {@code glowColor} to fully transparent.
+     *
+     * @param gradientRadius radius over which the gradient fades out
+     * @param fillRadius      radius of the filled circle the glow is painted into
+     */
+    private void drawGlow(Graphics2D g, int centerX, int centerY, int gradientRadius, int fillRadius, Color glowColor) {
+        float[] dist = {0.0f, 1.0f};
+        Color transparent = new Color(glowColor.getRed(), glowColor.getGreen(), glowColor.getBlue(), 0);
+        Color[] colors = {glowColor, transparent};
+        g.setPaint(new java.awt.RadialGradientPaint(centerX, centerY, gradientRadius, dist, colors));
+        g.fillOval(centerX - fillRadius, centerY - fillRadius, fillRadius * 2, fillRadius * 2);
     }
 
     private void drawPickableItem(Graphics2D g, model.PickableItem pi) {
@@ -470,12 +458,7 @@ public class ScenePanel extends JPanel {
             long time = System.currentTimeMillis();
             int pulse = (int) (Math.sin(time / 200.0) * 10) + 15;
 
-            // Key Glow
-            float[] dist = {0.0f, 1.0f};
-            Color[] colors = {new Color(255, 215, 0, 100 + pulse), new Color(255, 215, 0, 0)};
-            java.awt.RadialGradientPaint glow = new java.awt.RadialGradientPaint(x + 10, y + 15, 30 + pulse / 2, dist, colors);
-            g.setPaint(glow);
-            g.fillOval(x - 20, y - 15, 60, 60);
+            drawGlow(g, x + 10, y + 15, 30 + pulse / 2, 30, new Color(255, 215, 0, 100 + pulse));
 
             // Key Shape (Golden)
             g.setColor(new Color(255, 215, 0));
@@ -488,12 +471,7 @@ public class ScenePanel extends JPanel {
             long time = System.currentTimeMillis();
             int pulse = (int) (Math.sin(time / 150.0) * 15) + 20;
 
-            // Diamond Glow
-            float[] dist = {0.0f, 1.0f};
-            Color[] colors = {new Color(0, 255, 255, 120 + pulse), new Color(0, 255, 255, 0)};
-            java.awt.RadialGradientPaint glow = new java.awt.RadialGradientPaint(x + 15, y + 15, 40 + pulse / 2, dist, colors);
-            g.setPaint(glow);
-            g.fillOval(x - 25, y - 25, 80, 80);
+            drawGlow(g, x + 15, y + 15, 40 + pulse / 2, 40, new Color(0, 255, 255, 120 + pulse));
 
             // Diamond Shape (Cyan)
             g.setColor(new Color(0, 255, 255));
@@ -512,7 +490,7 @@ public class ScenePanel extends JPanel {
         int y = door.getY();
         int w = door.getWidth();
         int h = door.getHeight();
-        double progress = door.getAnimProgress();
+        double progress = door.getOpenProgress();
 
         // Slide two panels out from the center
         int panelW = w / 2;

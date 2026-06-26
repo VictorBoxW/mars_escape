@@ -7,7 +7,6 @@ import java.util.List;
 public class Player extends Character {
     private static final long serialVersionUID = 1L;
     private final List<Item> inventory;
-    private boolean hasEnergyCrystal;
     private int x;
     private int y;
     private double rotation;
@@ -82,11 +81,4 @@ public class Player extends Character {
         return item.interact(this);
     }
 
-    public void obtainEnergyCrystal() {
-        hasEnergyCrystal = true;
-    }
-
-    public boolean hasEnergyCrystal() {
-        return hasEnergyCrystal;
-    }
 }

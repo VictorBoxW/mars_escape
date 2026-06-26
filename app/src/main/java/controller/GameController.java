@@ -7,6 +7,8 @@ import model.Player;
 import model.GameState;
 import persistence.PersistenceManager;
 
+import java.io.IOException;
+
 public class GameController {
     private final CombatSystem combatSystem;
     private final PersistenceManager persistenceManager;
@@ -15,7 +17,7 @@ public class GameController {
     private final EnemyDropHandler enemyDropHandler;
     private final ItemPickupHandler itemPickupHandler;
     private final EncounterHandler encounterHandler;
-    
+
     private Player player;
     private Castle castle;
     private Enemy currentEnemy;
@@ -24,16 +26,16 @@ public class GameController {
 
     public GameController() {
         this(new CombatSystem(), new persistence.FilePersistenceManager(),
-             new InteractionHandler(), new FloorTransitionHandler(),
-             new EnemyDropHandler(), new ItemPickupHandler(),
-             new EncounterHandler());
+                new InteractionHandler(), new FloorTransitionHandler(),
+                new EnemyDropHandler(), new ItemPickupHandler(),
+                new EncounterHandler());
     }
 
     public GameController(CombatSystem combatSystem, PersistenceManager persistenceManager) {
         this(combatSystem, persistenceManager,
-             new InteractionHandler(), new FloorTransitionHandler(),
-             new EnemyDropHandler(), new ItemPickupHandler(),
-             new EncounterHandler());
+                new InteractionHandler(), new FloorTransitionHandler(),
+                new EnemyDropHandler(), new ItemPickupHandler(),
+                new EncounterHandler());
     }
 
     public GameController(CombatSystem combatSystem, PersistenceManager persistenceManager,
@@ -82,7 +84,7 @@ public class GameController {
     }
 
     public void useItem(int itemIndex) {
-        if (gameOver || player == null || !player.isAlive()) {
+        if (!isGameActive()) {
             return;
         }
 
@@ -97,12 +99,11 @@ public class GameController {
     }
 
     public void movePlayer(int dx, int dy) {
-        if (gameOver || currentEnemy != null) return;
-        
+        if (!isGameActive() || currentEnemy != null) return;
+
         int nextX = player.getX() + dx;
         int nextY = player.getY() + dy;
-        
-        // Update rotation based on direction
+
         if (dx != 0 || dy != 0) {
             double angle = Math.toDegrees(Math.atan2(dy, dx)) + 90;
             player.setRotation(angle);
@@ -111,9 +112,9 @@ public class GameController {
 
         Floor currentFloor = castle.getCurrentFloor();
         if (currentFloor != null) {
-            FloorTransitionHandler.TransitionResult transition = 
-                floorTransitionHandler.checkExitDoorTransition(player, castle, nextX, nextY, gamePanel);
-            
+            FloorTransitionHandler.TransitionResult transition =
+                    floorTransitionHandler.checkExitDoorTransition(player, castle, nextX, nextY, gamePanel);
+
             if (transition == FloorTransitionHandler.TransitionResult.VICTORY) {
                 gameOver = true;
                 return;
@@ -131,6 +132,9 @@ public class GameController {
         }
     }
 
+    /**
+     * Called on every timer tick to advance door animations and refresh the view.
+     */
     public void update() {
         Floor currentFloor = castle.getCurrentFloor();
         if (currentFloor != null) {
@@ -148,7 +152,7 @@ public class GameController {
         Floor currentFloor = castle.getCurrentFloor();
         if (currentFloor == null) return false;
         for (model.Door door : currentFloor.getDoors()) {
-            double progress = door.getAnimProgress();
+            double progress = door.getOpenProgress();
             if (door.isOpen() && progress < 1.0) return true;
             if (!door.isOpen() && progress > 0.0) return true;
         }
@@ -184,8 +188,12 @@ public class GameController {
         return gameOver;
     }
 
+    private boolean isGameActive() {
+        return !gameOver && player != null && player.isAlive();
+    }
+
     private boolean canFight() {
-        return !gameOver && player != null && player.isAlive() && currentEnemy != null && currentEnemy.isAlive();
+        return isGameActive() && currentEnemy != null && currentEnemy.isAlive();
     }
 
     private void resolveCombatTurn(CombatTurnResult result) {
@@ -216,11 +224,9 @@ public class GameController {
         gameOver = true;
         currentEnemy = null;
         gamePanel.appendLog("Mission failed. The astronaut has fallen in the fortress.");
-        
-        // Notify UI of defeat
-        if (gamePanel != null) {
-            gamePanel.showGameOverDialog(false);
-        }
+
+        gamePanel.showGameOverDialog(false);
+
     }
 
     private void refreshView() {
@@ -233,16 +239,21 @@ public class GameController {
         persistenceManager.save(state, filepath);
     }
 
+    /**
+     * @throws ClassNotFoundException if the save file was created with an incompatible version of the game
+     * @throws IOException if the file cannot be read
+     */
     public void loadGame(String filepath) throws java.io.IOException, ClassNotFoundException {
         GameState state = persistenceManager.load(filepath);
         this.player = state.getPlayer();
         this.castle = state.getCastle();
         this.currentEnemy = state.getCurrentEnemy();
         this.gameOver = state.isGameOver();
-        
+
         if (gamePanel != null) {
             gamePanel.setLog(state.getLogHistory());
             gamePanel.refresh();
         }
     }
+
 }

@@ -33,20 +33,22 @@ public class FloorTransitionHandler {
 
         for (Door door : currentFloor.getDoors()) {
             if (door.isExitDoor() && door.isOpen() && door.getBounds().contains(nextX, nextY)) {
-                if (castle.getCurrentFloorNumber() == castle.getFloorCount()) {
-                    // VICTORY on final floor
-                    gamePanel.appendLog("The astronaut takes the Energy Diamond and the fuel key.");
-                    gamePanel.appendLog("Mission Success: The supplies are secured. It's time to fly home!");
-                    if (gamePanel != null) {
-                        gamePanel.showGameOverDialog(true);
-                    }
-                    return TransitionResult.VICTORY;
-                } else {
-                    return TransitionResult.CONTINUE;
-                }
+                return resolveExitDoorTransition(castle, gamePanel);
             }
         }
         return TransitionResult.NONE;
+    }
+
+    private TransitionResult resolveExitDoorTransition(Castle castle, GameView gamePanel) {
+        boolean onFinalFloor = castle.getCurrentFloorNumber() == castle.getFloorCount();
+        if (!onFinalFloor) {
+            return TransitionResult.CONTINUE;
+        }
+
+        gamePanel.appendLog("The astronaut takes the Energy Diamond and the fuel key.");
+        gamePanel.appendLog("Mission Success: The supplies are secured. It's time to fly home!");
+        gamePanel.showGameOverDialog(true);
+        return TransitionResult.VICTORY;
     }
 
     /**
@@ -59,8 +61,8 @@ public class FloorTransitionHandler {
         if (floor.isCleared()) {
             if (castle.advanceFloor()) {
                 gamePanel.appendLog("System: Ascending to " + castle.getCurrentFloor().getName());
-                player.setPosition(100, 100); // Start of floor
-            } else if (!castle.isEnergyCrystalTaken()) {
+                player.setPosition(100, 100);
+            } else {
                 gamePanel.appendLog("The fortress is quiet, but the crystal is still missing.");
             }
         }

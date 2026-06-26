@@ -18,21 +18,21 @@ class DoorTest {
     void testDoorOpening() {
         Door door = new Door(100, 100, 50, 50);
         assertFalse(door.isOpen());
-        assertEquals(0.0, door.getAnimProgress());
+        assertEquals(0.0, door.getOpenProgress());
         
         door.setOpen(true);
         assertTrue(door.isOpen());
         
         // Test animation progress update
         door.update();
-        assertTrue(door.getAnimProgress() > 0.0);
+        assertTrue(door.getOpenProgress() > 0.0);
         
         for(int i = 0; i < 10; i++) door.update();
-        assertEquals(1.0, door.getAnimProgress());
+        assertEquals(1.0, door.getOpenProgress());
         
         door.setOpen(false);
         door.update();
-        assertTrue(door.getAnimProgress() < 1.0);
+        assertTrue(door.getOpenProgress() < 1.0);
     }
 
     @Test

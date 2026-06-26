@@ -50,10 +50,4 @@ class PlayerTest {
         assertEquals(0.5, player.getWalkPhase(), 0.0001);
     }
 
-    @Test
-    void testEnergyCrystal() {
-        assertFalse(player.hasEnergyCrystal());
-        player.obtainEnergyCrystal();
-        assertTrue(player.hasEnergyCrystal());
-    }
 }

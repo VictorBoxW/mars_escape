@@ -7,6 +7,7 @@ import java.util.List;
 
 public class Floor implements java.io.Serializable {
     private static final long serialVersionUID = 1L;
+    private static final int PLAYER_COLLISION_SIZE = 40;
     private final String name;
     private final List<Room> rooms;
     private final List<Rectangle> walls;
@@ -77,6 +78,9 @@ public class Floor implements java.io.Serializable {
         return rooms.stream().filter(r -> !r.isCleared()).findFirst().orElse(null);
     }
 
+    /**
+     * Returns true if all non-boss rooms are cleared, allowing access to the boss room.
+     */
     public boolean canAccessBoss() {
         return rooms.stream()
                 .filter(r -> !r.isBossRoom())
@@ -110,7 +114,9 @@ public class Floor implements java.io.Serializable {
 
         // Check for wall collisions
         // Player is roughly 40x40 in top-down view (based on ScenePanel)
-        Rectangle playerBounds = new Rectangle(x - 20, y - 20, 40, 40);
+        // Calculate centering offset dynamically based on player size constant
+        int halfSize = PLAYER_COLLISION_SIZE / 2;
+        Rectangle playerBounds = new Rectangle(x - halfSize, y - halfSize, PLAYER_COLLISION_SIZE, PLAYER_COLLISION_SIZE);
         for (Rectangle wall : walls) {
             if (wall.intersects(playerBounds)) {
                 return false;

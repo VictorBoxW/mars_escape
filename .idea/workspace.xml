@@ -7,13 +7,29 @@
     <list default="true" id="97ecc1ba-2f7a-4c13-9fb7-22901b6a28ee" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/java/controller/CastleFactory.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/controller/CastleFactory.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/controller/EncounterHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/controller/EncounterHandler.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/controller/CombatSystem.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/controller/CombatSystem.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/java/controller/EnemyDropHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/controller/EnemyDropHandler.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/controller/FloorTransitionHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/controller/FloorTransitionHandler.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/controller/GameController.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/controller/GameController.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/java/controller/InteractionHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/controller/InteractionHandler.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/controller/ItemPickupHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/controller/ItemPickupHandler.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/it/unicam/cs/mpgc/rpg130901/MessageUtils.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/model/Castle.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/model/Castle.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/model/Character.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/model/Character.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/java/model/Door.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/model/Door.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/java/model/Floor.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/model/Floor.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/model/Interactable.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/model/Item.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/model/Item.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/model/PickableItem.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/model/PickableItem.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/model/Player.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/model/Player.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/java/model/Room.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/model/Room.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/persistence/FilePersistenceManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/persistence/FilePersistenceManager.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/view/GameWindow.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/view/GameWindow.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/java/view/ScenePanel.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/view/ScenePanel.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/test/java/it/unicam/cs/mpgc/rpg130901/MessageUtilsTest.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/test/java/model/DoorTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/test/java/model/DoorTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/test/java/model/PlayerTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/test/java/model/PlayerTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/test/java/persistence/PersistenceTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/test/java/persistence/PersistenceTest.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -41,11 +57,6 @@
               <path>
                 <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
                 <item name="MarsEscape" type="f1a62948:ProjectNode" />
-                <item name="Tasks" type="e4a08cd1:TasksNode" />
-              </path>
-              <path>
-                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
-                <item name="MarsEscape" type="f1a62948:ProjectNode" />
                 <item name="app" type="2d1252cf:ModuleNode" />
               </path>
               <path>
@@ -60,6 +71,13 @@
                 <item name="app" type="2d1252cf:ModuleNode" />
                 <item name="Tasks" type="e4a08cd1:TasksNode" />
                 <item name="application" type="c8890929:TasksNode$1" />
+              </path>
+              <path>
+                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
+                <item name="MarsEscape" type="f1a62948:ProjectNode" />
+                <item name="app" type="2d1252cf:ModuleNode" />
+                <item name="Tasks" type="e4a08cd1:TasksNode" />
+                <item name="verification" type="c8890929:TasksNode$1" />
               </path>
               <path>
                 <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
@@ -136,7 +154,7 @@
     &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
 }</component>
-  <component name="RunManager" selected="Gradle.MarsEscape [:app:run]">
+  <component name="RunManager" selected="Gradle.MarsEscape [:app:test]">
     <configuration name="CombatSystemTest.testAttackTurn" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
       <ExternalSystemSettings>
         <option name="executionName" />
@@ -268,9 +286,9 @@
     </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="Gradle.MarsEscape [:app:test]" />
         <item itemvalue="Gradle.MarsEscape [:app:run]" />
         <item itemvalue="Gradle.MarsEscape [:app:check]" />
-        <item itemvalue="Gradle.MarsEscape [:app:test]" />
         <item itemvalue="Gradle.CombatSystemTest.testDefeatEnemy" />
         <item itemvalue="Gradle.CombatSystemTest.testAttackTurn" />
       </list>
@@ -308,7 +326,10 @@
       <workItem from="1782125044460" duration="144000" />
       <workItem from="1782145922373" duration="652000" />
       <workItem from="1782425304220" duration="2729000" />
-      <workItem from="1782428093507" duration="645000" />
+      <workItem from="1782428093507" duration="1002000" />
+      <workItem from="1782479154137" duration="7564000" />
+      <workItem from="1782486810796" duration="4351000" />
+      <workItem from="1782492400758" duration="2095000" />
     </task>
     <servers />
   </component>

@@ -70,20 +70,17 @@ public abstract class Character implements Fightable, java.io.Serializable {
     @Override
     public int takeDamage(int incomingAttack) {
         int damage = Math.max(1, incomingAttack - getDefensePower());
-        int totalDamageDealt = damage; // including HP and Shield
-        
-        if (shield > 0) {
-            if (shield >= damage) {
-                shield -= damage;
-                return damage;
-            } else {
-                damage -= shield;
-                shield = 0;
-            }
-        }
-        
-        health = Math.max(0, health - damage);
-        return totalDamageDealt;
+        int remainingDamage = absorbWithShield(damage);
+        health = Math.max(0, health - remainingDamage);
+        return damage;
+    }
+
+    private int absorbWithShield(int damage) {
+        if (shield <= 0) return damage;
+        if (shield >= damage) { shield -= damage; return 0; }
+        damage -= shield;
+        shield = 0;
+        return damage;
     }
 
     public int heal(int amount) {
