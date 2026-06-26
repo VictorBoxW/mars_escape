@@ -181,7 +181,7 @@ public class ScenePanel extends JPanel {
         if (player != null) {
             drawCharacter(g2d, centerX - 290, centerY + 50, true, "Astronaut", player.getHealth(), player.getMaxHealth(), player.getShield(), false);
         }
-        drawCharacter(g2d, centerX + 210, centerY + 50, false, "Enemy", enemy.getHealth(), enemy.getMaxHealth(), enemy.getShield(), enemy.isBoss());
+        drawCharacter(g2d, centerX + 210, centerY + 50, false, enemy.getName(), enemy.getHealth(), enemy.getMaxHealth(), enemy.getShield(), enemy.isBoss());
 
         // Restore the original transform
         g2d.setTransform(savedTransform);
