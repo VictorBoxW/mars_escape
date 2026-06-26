@@ -47,7 +47,6 @@ public class FloorTransitionHandler {
 
         gamePanel.appendLog("The astronaut takes the Energy Diamond and the fuel key.");
         gamePanel.appendLog("Mission Success: The supplies are secured. It's time to fly home!");
-        gamePanel.showGameOverDialog(true);
         return TransitionResult.VICTORY;
     }
 

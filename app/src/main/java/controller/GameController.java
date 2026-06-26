@@ -117,6 +117,7 @@ public class GameController {
 
             if (transition == FloorTransitionHandler.TransitionResult.VICTORY) {
                 gameOver = true;
+                gamePanel.showGameOverDialog(true);
                 return;
             } else if (transition == FloorTransitionHandler.TransitionResult.CONTINUE) {
                 continueExploring();

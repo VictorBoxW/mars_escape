@@ -6,7 +6,6 @@
   <component name="ChangeListManager">
     <list default="true" id="97ecc1ba-2f7a-4c13-9fb7-22901b6a28ee" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/controller/CastleFactory.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/controller/CastleFactory.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -284,7 +283,7 @@
       <workItem from="1782492400758" duration="2095000" />
       <workItem from="1782497026303" duration="57000" />
       <workItem from="1782510676059" duration="1138000" />
-      <workItem from="1782511914224" duration="319000" />
+      <workItem from="1782511914224" duration="1035000" />
     </task>
     <servers />
   </component>
