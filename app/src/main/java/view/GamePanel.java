@@ -80,7 +80,7 @@ public class GamePanel extends JPanel implements controller.GameView {
         attackButton.addActionListener(event -> { controller.attack(); requestFocusInWindow(); });
         dodgeButton.addActionListener(event -> { controller.dodge(); requestFocusInWindow(); });
         useItemButton.addActionListener(event -> { controller.useItem(inventoryBox.getSelectedIndex()); requestFocusInWindow(); });
-        restartButton.addActionListener(event -> { controller.restartGame(); requestFocusInWindow(); });
+        restartButton.addActionListener(event -> { confirmRestart(); requestFocusInWindow(); });
         saveButton.addActionListener(event -> { saveGameAction(); requestFocusInWindow(); });
         loadButton.addActionListener(event -> { loadGameAction(); requestFocusInWindow(); });
 
@@ -188,6 +188,19 @@ public class GamePanel extends JPanel implements controller.GameView {
         java.awt.Window window = javax.swing.SwingUtilities.getWindowAncestor(this);
         if (window instanceof GameWindow) {
             ((GameWindow) window).showGameOverDialog(victory);
+        }
+    }
+
+    private void confirmRestart() {
+        int response = javax.swing.JOptionPane.showConfirmDialog(
+            this,
+            "Are you sure you want to start over? All current progress will be lost.",
+            "Restart Mission",
+            javax.swing.JOptionPane.YES_NO_OPTION,
+            javax.swing.JOptionPane.QUESTION_MESSAGE
+        );
+        if (response == javax.swing.JOptionPane.YES_OPTION) {
+            controller.restartGame();
         }
     }
 

@@ -51,7 +51,7 @@ public class CastleFactory {
 
     private static Floor createFloor2() {
         List<Room> rooms = List.of(
-            new Room("Research Lab", List.of(new Enemy("Alien Scientist", 60, 8, "Intrruption!")), List.of(), 100, 1000, 180, 180),
+            new Room("Research Lab", List.of(new Enemy("Alien Scientist", 60, 8, "Intruder!")), List.of(), 100, 1000, 180, 180),
             new Room("Data Vault", List.of(new Enemy("Alien Guardian", 72, 9, "Aagh!")), List.of(), 1000, 100, 180, 180),
             new Room("Lab Command", List.of(new Enemy("Alien Master", 84, 10, "Stronger!")), List.of(), 2000, 2000, 180, 180)
         );
