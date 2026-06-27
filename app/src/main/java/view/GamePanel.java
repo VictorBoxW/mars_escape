@@ -43,14 +43,17 @@ public class GamePanel extends JPanel implements controller.GameView {
         this.saveButton = new JButton("Save Game");
         this.loadButton = new JButton("Load Game");
 
-        setPreferredSize(new Dimension(1280, 720));
         setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
         configureLog();
         configureControls();
 
-        add(scenePanel, BorderLayout.NORTH);
-        add(new JScrollPane(logArea), BorderLayout.CENTER);
-        add(buildSouthPanel(), BorderLayout.SOUTH);
+        JPanel bottomPanel = new JPanel(new BorderLayout(8, 4));
+        bottomPanel.add(new JScrollPane(logArea), BorderLayout.CENTER);
+        bottomPanel.add(buildSouthPanel(), BorderLayout.SOUTH);
+        bottomPanel.setPreferredSize(new Dimension(0, 220));
+
+        add(scenePanel, BorderLayout.CENTER);
+        add(bottomPanel, BorderLayout.SOUTH);
     }
 
     public void setLog(String message) {

@@ -29,7 +29,6 @@ public class ScenePanel extends JPanel {
 
     public ScenePanel(GameController controller) {
         this.controller = controller;
-        setPreferredSize(new Dimension(880, 600));
         setBackground(new Color(10, 10, 15));
     }
 
