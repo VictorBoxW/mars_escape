@@ -32,7 +32,6 @@ public class EncounterHandler {
 
             Enemy enemy = room.nextEnemy().orElse(null);
             if (enemy != null) {
-                gamePanel.appendLog("System: Entering " + room.getName());
                 gamePanel.appendLog("Encountered: " + enemy.getName());
                 gamePanel.appendLog(enemy.getTaunt());
             }

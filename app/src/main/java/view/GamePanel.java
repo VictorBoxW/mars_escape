@@ -13,10 +13,8 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
-import model.Floor;
 import model.Item;
 import model.Player;
-import model.Room;
 
 public class GamePanel extends JPanel implements controller.GameView {
     private final GameController controller;
@@ -158,17 +156,10 @@ public class GamePanel extends JPanel implements controller.GameView {
             return;
         }
 
-        Floor floor = controller.getCastle().getCurrentFloor();
-        Room room = floor == null ? null : floor.getCurrentRoom();
-        String location = room == null
-                ? "Mission complete"
-                : floor.getName() + " / " + room.getName();
-
         statusLabel.setText("Astronaut HP " + player.getHealth() + "/" + player.getMaxHealth()
                 + " [Shield: " + player.getShield() + "]"
                 + " | ATK " + player.getAttackPower()
-                + " | DEF " + player.getDefensePower()
-                + " | " + location);
+                + " | DEF " + player.getDefensePower());
     }
 
     private void updateButtons() {
