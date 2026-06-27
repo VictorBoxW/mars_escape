@@ -2,7 +2,9 @@ package view;
 
 import controller.GameController;
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.util.List;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
@@ -77,6 +79,8 @@ public class GamePanel extends JPanel implements controller.GameView {
         logArea.setEditable(false);
         logArea.setLineWrap(true);
         logArea.setWrapStyleWord(true);
+        logArea.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 14));
+        logArea.setForeground(new Color(40, 40, 40));
     }
 
     private void configureControls() {
