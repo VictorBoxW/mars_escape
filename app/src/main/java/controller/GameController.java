@@ -107,7 +107,7 @@ public class GameController {
         if (dx != 0 || dy != 0) {
             double angle = Math.toDegrees(Math.atan2(dy, dx)) + 90;
             player.setRotation(angle);
-            player.updateWalkPhase(0.3); // Progress animation
+            player.updateWalkPhase(0.3);
         }
 
         Floor currentFloor = castle.getCurrentFloor();

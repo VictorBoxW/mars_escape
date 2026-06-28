@@ -65,7 +65,7 @@ public class MenuPanel extends JPanel {
         int[] yHills1 = {h-120, h-170, h-140, h-200, h-150, h, h};
         g2d.fillPolygon(xHills1, yHills1, 7);
 
-        // 4. Draw Alien Fortress (Background Right) - Moved to the right
+        // 4. Draw Alien Fortress (Background Right)
         drawFortress(g2d, w - 600, h - 450);
 
         // 5. Draw Nearer Hills (Gradient)
@@ -87,7 +87,7 @@ public class MenuPanel extends JPanel {
     }
 
     private void drawAstronaut(Graphics2D g, int x, int y) {
-        // Body (White Suit) - Scaled up
+        // Body (White Suit)
         g.setColor(Color.WHITE);
         g.fillRoundRect(x, y, 60, 90, 20, 20);
         
@@ -121,7 +121,7 @@ public class MenuPanel extends JPanel {
         // Main Alien (Scaled up)
         drawSingleAlien(g, x, y, 50, 70);
         
-        // Smaller Aliens (Group) - Now with eyes!
+        // Smaller Aliens (Group)
         drawSingleAlien(g, x + 100, y + 40, 35, 50);
         drawSingleAlien(g, x - 80, y + 30, 35, 50);
     }
@@ -164,17 +164,15 @@ public class MenuPanel extends JPanel {
         g.fillRect(x + 120, y + 60, 260, 12); 
         
         // 5. Aliens on Balcony (Drawn before railing to hide feet)
-        // Positioned so they stand on the floor (y+60)
         drawSingleAlien(g, x + 160, y + 30, 20, 30);
         drawSingleAlien(g, x + 240, y + 25, 22, 32);
         drawSingleAlien(g, x + 320, y + 30, 20, 30);
 
         // 6. Balcony Railing (Drawn OVER the aliens' bottom part)
-        // Lowered height (12) and moved down (y+48) to clear heads
         g.setColor(new Color(45, 45, 55));
         g.fillRect(x + 120, y + 48, 260, 14); 
         
-        // 7. Dark Blue Glow Windows (Even darker)
+        // 7. Dark Blue Glow Windows
         g.setColor(new Color(0, 50, 150, 180));
         g.fillRect(x + 85, y - 90, 20, 20);
         g.fillRect(x + 395, y - 90, 20, 20);
@@ -191,7 +189,7 @@ public class MenuPanel extends JPanel {
 
         JLabel title = new JLabel("MARS ESCAPE", SwingConstants.CENTER);
         title.setForeground(new Color(255, 120, 80));
-        title.setFont(new Font("Orbitron", Font.BOLD, 52)); // Assuming default fonts if Orbitron isn't there
+        title.setFont(new Font("Orbitron", Font.BOLD, 52));
         if (title.getFont().getName().equals("Dialog")) {
             title.setFont(new Font(Font.MONOSPACED, Font.BOLD, 52));
         }
@@ -242,8 +240,6 @@ public class MenuPanel extends JPanel {
                 BorderFactory.createLineBorder(Color.WHITE, 1),
                 BorderFactory.createEmptyBorder(5, 15, 5, 15)));
         
-        // Simple hover effect simulated via mouse listeners could be added, 
-        // but for now, we'll stick to a solid sci-fi look.
         return button;
     }
 }

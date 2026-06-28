@@ -27,8 +27,8 @@ class CharacterTest {
     void testTakeDamage() {
         // Base defense of Player is 2. Attack of 10 should deal 10 - 2 = 8 damage.
         int damage = testCharacter.takeDamage(10);
-        assertEquals(8, damage);                     // Changed from 6
-        assertEquals(92, testCharacter.getHealth()); // Changed from 94
+        assertEquals(8, damage);
+        assertEquals(92, testCharacter.getHealth());
     }
 
     @Test
@@ -37,9 +37,9 @@ class CharacterTest {
         // Attack of 12 should deal 12 - 2 = 10 damage.
         // Shield should absorb all 10 damage and drop to 0.
         int damage = testCharacter.takeDamage(12);
-        assertEquals(10, damage);                    // Changed from 8
+        assertEquals(10, damage);
         assertEquals(100, testCharacter.getHealth());
-        assertEquals(0, testCharacter.getShield());   // Changed from 2
+        assertEquals(0, testCharacter.getShield());
 
         // Next attack of 10 should deal 10 - 2 = 8 damage total.
         // Shield is empty, so all 8 hits health directly.

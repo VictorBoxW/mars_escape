@@ -188,7 +188,6 @@ public class ScenePanel extends JPanel {
 
     private void drawRoom(Graphics2D g2d, model.Room room) {
         if (!room.isCleared()) {
-            // Boxes and names removed as requested
             boolean isBoss = room.isBossRoom();
             drawTopDownAlien(g2d, room.getX() + room.getWidth() / 2, room.getY() + room.getHeight() / 2, isBoss);
         }
@@ -198,7 +197,7 @@ public class ScenePanel extends JPanel {
         g2d.translate(x, y);
         g2d.rotate(Math.toRadians(rotation));
 
-        // Legs/Boots (from combat style)
+        // Legs/Boots
         int footOffset = (int) (Math.sin(walkPhase) * 12);
         g2d.setColor(new Color(40, 40, 40));
         g2d.fillRect(-18, 10 + footOffset, 12, 15); // Left boot
@@ -213,7 +212,7 @@ public class ScenePanel extends JPanel {
         g2d.fillRect(-28, -5 - armOffset, 8, 20); // Left arm
         g2d.fillRect(20, -5 + armOffset, 8, 20);  // Right arm
 
-        // Backpack/Body (White suit)
+        // Backpack
         g2d.setColor(new Color(220, 220, 220));
         g2d.fillRoundRect(-22, -10, 44, 28, 8, 8);
 
@@ -221,10 +220,10 @@ public class ScenePanel extends JPanel {
         g2d.setColor(Color.WHITE);
         g2d.fillOval(-20, -15, 40, 35);
 
-        // Helmet (White circle)
+        // Helmet
         g2d.fillOval(-16, -28, 32, 32);
 
-        // Visor (Glowing blue visor)
+        // Visor
         g2d.setColor(new Color(100, 220, 255));
         g2d.fillRoundRect(-12, -24, 24, 12, 6, 6);
 
@@ -249,11 +248,11 @@ public class ScenePanel extends JPanel {
         g2d.setColor(isBoss ? new Color(20, 20, 20) : new Color(45, 150, 45));
         g2d.fillOval(x - 20, y - 5, 40, 30);
 
-        // Large Alien Head (Combat style)
+        // Large Alien Head
         g2d.setColor(getAlienBodyColor(isBoss));
         g2d.fillOval(x - 28, y - 35, 56, 45);
 
-        // Almond Eyes (Combat style)
+        // Almond Eyes
         g2d.setColor(getAlienEyeColor(isBoss));
         g2d.fillOval(x - 20, y - 22, 15, 22); // Left eye
         g2d.fillOval(x + 5, y - 22, 15, 22);  // Right eye
@@ -308,7 +307,7 @@ public class ScenePanel extends JPanel {
         if (floor != null) {
             for (int i = 200; i < floorWidth; i += 400) {
                 for (int j = 200; j < floorHeight; j += 400) {
-                    // Skip torches in the new upper corridor to keep it clean
+                    // Skip torches in the upper corridor to keep it clean
                     if (i > 1240 && j < 1100) continue;
                     // Skip torch overlapping with Med Kit door
                     if (i == 200 && j == 1800) continue;
@@ -350,7 +349,6 @@ public class ScenePanel extends JPanel {
         Floor floor = castle.getCurrentFloor();
 
         String levelInfo = "FLOOR LEVEL: " + castle.getCurrentFloorNumber() + " / " + castle.getFloorCount();
-        // Room name removed as requested
         String floorName = (floor == null) ? "CORE SECURED" : floor.getName().toUpperCase();
 
         g2d.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 16));

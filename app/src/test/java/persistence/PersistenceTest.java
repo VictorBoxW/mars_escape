@@ -28,7 +28,7 @@ class PersistenceTest {
     void testSaveAndLoadGameState(@TempDir File tempDir) throws Exception {
         // 1. Create a mock game state
         Player player = new Player("Test Astronaut");
-        player.heal(20); // modify health
+        player.heal(20);
         player.addShield(50);
         player.setPosition(120, 240);
         player.setRotation(180.0);

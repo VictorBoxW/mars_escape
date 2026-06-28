@@ -39,11 +39,9 @@ class GameControllerTest {
             }
         };
 
-        // Inject dependencies
         CombatSystem customCombatSystem = new CombatSystem();
         GameController controller = new GameController(customCombatSystem, mockPM);
 
-        // Inject mock view
         GameView mockView = new GameView() {
             private String logText = "";
             @Override public void setLog(String message) { logText = message; }

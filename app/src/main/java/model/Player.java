@@ -15,8 +15,8 @@ public class Player extends Character {
     public Player(String name) {
         super(name, 100, 12, 2);
         this.inventory = new ArrayList<>();
-        this.x = 440; // Center
-        this.y = 550; // Near bottom
+        this.x = 440;
+        this.y = 550;
         this.rotation = 0; // Facing Up
         this.walkPhase = 0;
     }

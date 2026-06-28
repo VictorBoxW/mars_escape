@@ -6,8 +6,9 @@
   <component name="ChangeListManager">
     <list default="true" id="97ecc1ba-2f7a-4c13-9fb7-22901b6a28ee" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/controller/EncounterHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/controller/EncounterHandler.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/view/GamePanel.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/view/GamePanel.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/controller/GameController.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/controller/GameController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/view/MenuPanel.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/view/MenuPanel.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/view/ScenePanel.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/view/ScenePanel.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -35,7 +36,27 @@
               <path>
                 <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
                 <item name="MarsEscape" type="f1a62948:ProjectNode" />
-                <item name="utilities" type="2d1252cf:ModuleNode" />
+                <item name="app" type="2d1252cf:ModuleNode" />
+              </path>
+              <path>
+                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
+                <item name="MarsEscape" type="f1a62948:ProjectNode" />
+                <item name="app" type="2d1252cf:ModuleNode" />
+                <item name="Tasks" type="e4a08cd1:TasksNode" />
+              </path>
+              <path>
+                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
+                <item name="MarsEscape" type="f1a62948:ProjectNode" />
+                <item name="app" type="2d1252cf:ModuleNode" />
+                <item name="Tasks" type="e4a08cd1:TasksNode" />
+                <item name="application" type="c8890929:TasksNode$1" />
+              </path>
+              <path>
+                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
+                <item name="MarsEscape" type="f1a62948:ProjectNode" />
+                <item name="app" type="2d1252cf:ModuleNode" />
+                <item name="Tasks" type="e4a08cd1:TasksNode" />
+                <item name="verification" type="c8890929:TasksNode$1" />
               </path>
             </expand>
             <select />
@@ -102,7 +123,7 @@
     &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
     &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
     &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;advanced.settings&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;project.propVCSSupport.Mappings&quot;,
     &quot;to.speed.mode.migration.done&quot;: &quot;true&quot;,
     &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
@@ -225,9 +246,9 @@
     </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="Application.App" />
         <item itemvalue="Gradle.MarsEscape [:app:run]" />
         <item itemvalue="Gradle.MarsEscape [:app:test]" />
+        <item itemvalue="Application.App" />
         <item itemvalue="Gradle.MarsEscape [:app:check]" />
         <item itemvalue="Gradle.CombatSystemTest.testDefeatEnemy" />
       </list>
@@ -275,7 +296,10 @@
       <workItem from="1782566292425" duration="4783000" />
       <workItem from="1782572974380" duration="1210000" />
       <workItem from="1782575903613" duration="2588000" />
-      <workItem from="1782579546394" duration="384000" />
+      <workItem from="1782579546394" duration="803000" />
+      <workItem from="1782593737419" duration="947000" />
+      <workItem from="1782651732262" duration="985000" />
+      <workItem from="1782679606690" duration="593000" />
     </task>
     <servers />
   </component>
@@ -303,5 +327,9 @@
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
+  </component>
+  <component name="XSLT-Support.FileAssociations.UIState">
+    <expand />
+    <select />
   </component>
 </project>

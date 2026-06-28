@@ -113,8 +113,6 @@ public class Floor implements java.io.Serializable {
         }
 
         // Check for wall collisions
-        // Player is roughly 40x40 in top-down view (based on ScenePanel)
-        // Calculate centering offset dynamically based on player size constant
         int halfSize = PLAYER_COLLISION_SIZE / 2;
         Rectangle playerBounds = new Rectangle(x - halfSize, y - halfSize, PLAYER_COLLISION_SIZE, PLAYER_COLLISION_SIZE);
         for (Rectangle wall : walls) {
